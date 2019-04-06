@@ -42,14 +42,15 @@
                 
                 <button type="button" class="searches-collapsible js-poet-search">Search poets:</button>
 
-                <form role="form" class="collapsible-content hidden js-form-submit js-poet-search-form">
+                <form role="form" class="collapsible-content hidden js-poet-search-form">
                     
                     <!-- Multiple poets can only be separated by commas, no spaces allowed. 
-                        Hence the regex pattern: \S+ (meaning, no space characters 1 or more times)-->
-                    <label class="input-styles" for="poets">Enter poet, or poets separated by commas:
-                        <input type="text" id="poets" name="poets" required pattern="\S+" placeholder="Shakespeare,Allen Ginsberg">
+                        Hence the regex pattern: \S+ (meaning, no spaces, 1 or more times)-->
+                    <label class="input-styles" for="poets">Enter poet (or poets separated by commas):
+                        <input type="text" id="poets" name="poets" required pattern="\S+" placeholder="Shakespeare,Emily Dickinson">
                     </label>
 
+                    <!-- If compare is checked, then the value 'yes' will be passed on submit. -->
                     <label class="input-styles" for="compare-poets">
                         <input type="checkbox" id="compare-poets" name="compare-poets" value="yes">
                         See comparison charts for multiple poets
@@ -92,6 +93,10 @@
 
             </section>
 
+            <section class="js-results hidden">
+            
+            </section>
+
         </main>
 
         <footer role="contentinfo" class="footer">
@@ -109,7 +114,7 @@
         src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
-        <script src="data.js"></script>
+        <!-- <script src="data.js"></script> -->
         <script src="index.js"></script>
     </body>
 </html>
