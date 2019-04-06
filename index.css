@@ -1,0 +1,105 @@
+html {
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+.hidden {
+    display: none;
+}
+
+body {
+    width: 100%;
+    max-width: 1000px;
+    margin: 2% 5%;
+}
+h1 {
+    margin-bottom: 2px;
+}
+
+h2 {
+    margin-top: 0;
+}
+
+.input-styles, #poets {
+    display: block;
+}
+
+.input-styles {
+    margin: 20px 0;
+}
+
+#poets {
+    width: 300px;
+    padding: 10px 5px;
+    margin: 5px 0;
+}
+
+.instructions {
+    width: 90%;
+    max-width: 600px;
+}
+
+.searches-collapsible, .searches-active {
+    background-color: gray;
+    color: white;
+    cursor: pointer;
+    padding: 15px;
+    width: 90%;
+    max-width: 400px;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: .9em;
+    margin: 10px 0;
+}
+
+.searches-collapsible:hover {
+    background-color: darkgray;
+}
+
+.searches-collapsible:after, .searches-active:after {
+    content: '\02795'; /* Unicode character for "plus" sign (+) */
+    font-size: .9em;
+    color: white;
+    float: right;
+    margin-left: 5px;
+}
+
+.searches-active:after {
+    content: "\2796"; /* Unicode character for "minus" sign (-) */
+}
+
+.collapsible-content {
+    padding: 0 15px;
+    overflow: hidden;
+    /* background-color: lightgray; */
+    width: 90%;
+    max-width: 400px;
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 2px;
+}
+
+.search-categories {
+    font-weight: bold;
+}
+
+.individual-searches {
+    padding: 5px 0 5px 15px;
+}
+
+.individual-searches li {
+    line-height: 1.5em;
+    font-weight: normal;
+}
+
+
+
+
+
+  

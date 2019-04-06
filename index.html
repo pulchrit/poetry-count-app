@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="A new view of your favorite poets. 
+            Analyze word frequency of poets' works and see resulting data visualizations.">
+        
+        <title>Poems, computed</title>
+
+        <!--Normalize css-->
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.1.1/normalize.min.css">
+        <!--Link to Google Fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <!--Link to custom css-->
+        <link rel="stylesheet" type="text/css" href="index.css">
+    
+    </head>
+
+    <body>
+        
+        <header role="banner">
+            
+            <h1>Poems, computed.</h1>
+            <h2>A new view of your favorite poets.</h2>
+       
+        </header>
+
+        <main role="main">
+
+            <p class="instructions">
+                Interested in seeing a different view of the themes or word choices of your 
+                favorite poets? Enter the name(s) below to perform a word freqency analysis, 
+                or choose one of the predefined searches. Results will be displayed in an 
+                interactive chart and data table. You can also view each poem used in the analysis.  
+            </p>
+        
+            <section class="search-poets-styles">
+                
+                <button type="button" class="searches-collapsible js-poet-search">Search poets:</button>
+
+                <form role="form" class="collapsible-content hidden js-form-submit js-poet-search-form">
+                    
+                    <!-- Multiple poets can only be separated by commas, no spaces allowed. 
+                        Hence the regex pattern: \S+ (meaning, no space characters 1 or more times)-->
+                    <label class="input-styles" for="poets">Enter poet, or poets separated by commas:
+                        <input type="text" id="poets" name="poets" required pattern="\S+" placeholder="Shakespeare,Allen Ginsberg">
+                    </label>
+
+                    <label class="input-styles" for="compare-poets">
+                        <input type="checkbox" id="compare-poets" name="compare-poets" value="yes">
+                        See comparison charts for multiple poets
+                    </label>
+
+                    <button class="input-styles" type="submit">Find poets</button>
+
+                </form>
+
+            </section>
+
+            <section class="predefined-search-style js-predefined-search">
+                
+                <!-- Collapsible based on: https://www.w3schools.com/howto/howto_js_collapsible.asp -->
+                <button type="button" class="searches-collapsible js-predefined-searches">Predefined searches:</button>
+                <div class="collapsible-content hidden js-predefined-searches-list">
+                    <ul>
+                        <li class="search-categories">Individual poets
+                            <ul class="individual-searches">
+                                <li>Shel Silverstein</li>
+                                <li>Ursula K. LeGuin</li>
+                            </ul>
+                        </li>
+                        
+                        <li class="search-categories">Poetic movements
+                            <ul class="individual-searches">
+                                <li>Romantics</li>
+                                <li>Harlem Renaissance</li>
+                            </ul>
+                        </li>
+
+                        <li class="search-categories">Poets compared
+                            <ul class="individual-searches">
+                                <li>Shakespeare to Allen Ginsberg</li>
+                                <li>Robert Frost to Homer</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+            </section>
+
+        </main>
+
+        <footer role="contentinfo" class="footer">
+            
+            <p>Powered by <a href="http://poetrydb.org/index.html">PoetryDB</a>.</p>
+
+            <address>
+                &copy;2019  <a href="mailto:pulchrit@gmail.com">Melissa Lafranchise</a>
+            </address>
+        
+        </footer>
+
+        <!--Links to jQuery, local Javascript and data files-->
+        <script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+        <script src="data.js"></script>
+        <script src="index.js"></script>
+    </body>
+</html>
