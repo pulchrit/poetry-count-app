@@ -16,10 +16,36 @@ function toggleCollapsibleMenus() {
     });
 }
 
-// Initializing this global variable for the array that contains 
-// the aggregate data for all poets. 
-// Not sure of the better way to do this and avoid a global variable??
-//const allDataForAllPoets = [];
+// For multiple poets, only a comma delimited list with no spaces is acceptable.
+// Simple validation from: 
+// https://developer.mozilla.org/en-US/docs/Learn/HTML/Forms/Form_validation#Customized_error_messages
+function validateForm() {
+    
+    const poets = document.getElementById("poets");
+
+    poets.addEventListener("input", event => {
+      
+        // if the input does not match the pattern defined with the pattern attribute on the input
+        // element of the form, a custom error message is alerted.
+        if (poets.validity.patternMismatch) {
+            poets.setCustomValidity("No spaces please. Enter poet names separated by commas.");
+        
+        // If input matches pattern, setCustomValidity to empty string, which effectively
+        // clears any error message. 
+        } else {
+            poets.setCustomValidity("");
+        }
+    }); 
+}
+
+const data = [];
+
+function makePoetDataObject(results) {
+    return {
+        name: results[0].author,
+        data: results
+    };
+}
 
 // Won't need this function if I stay with PoetryDb, but 
 // leaving it in for now just in case. 
@@ -52,43 +78,57 @@ function constructPoetryDBUrl(poet) {
     }; */
 }
 
-function processAllData(allDataForAllPoets, compare) {
-    console.log("data from process function: ");
-    console.log(allDataForAllPoets);
-    console.log("compare:" + compare);
-  
+function processAllData(data, compare) {
+    
+    console.log("data array:", data);
+
+    const poetNameString = data
+        .map(currentPoet => currentPoet.name)
+        .join(", ");
+
+    $(".js-results").html(`Results for: ${poetNameString}`).removeClass("hidden");
+} 
+
+function handleResponseErrors(response) {
+    if (!response.ok) {
+        throw Error(response.statusText);
+    } 
+    return response.json();  
 }
 
-function getPoetData(poets, compare) {
+// Uses Promises.all() to wait for all fetch calls to resolve, then processes
+// responses into a global data structure. 
+// Attribution: http://tinyurl.com/y5vm3eu8
+function getAllPoetData(allURLS, compare) {
 
-    const allDataForAllPoets = [];
-
-    // PoetryDB API allows only one poet to be queried at a time,
-    // so, if multiple poets have been entered, we need to loop 
-    // through them and call the API for each. Resulting data for 
-    // each is pushed into the allDataForAllPoets array.
-    poets.forEach(poet => {
-    
-        fetch(constructPoetryDBUrl(poet))
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(response.statusText);
-            }
-            return response.json(); 
-        })
+    let promises = allURLS.map(url => 
+        fetch(url)
+        .then(handleResponseErrors)
+        // I wasn't able to pass the poet name to a separate function, so
+        // I'm handling any 404 errors within Fetch because I can access the
+        // poet name and it's important to include it in the error message.
         .then(responseJSON => {
-            allDataForAllPoets.push(responseJSON);
-            return allDataForAllPoets;
-        }) 
+            if (responseJSON.status === 404) {
+            throw Error(`The poet, ${poet}, was ${responseJSON.reason.toLowerCase()} in the PoetryDB. 
+            Please enter a new search with a different poet.`);
+            }
+            return responseJSON;
+        })
         .catch(error => {
-            $(".js-results").html(
-                `<p>Hmmm...Something isn't right. Here's the error message:</p>
-                <p>${error}</p>`);
-            $(".js-results").removeClass("hidden");
-        })    
-    });
+            $(".js-error")
+            .html(
+                `<p>Something isn't right:</p>
+                <p>${error}</p>`)
+            .removeClass("hidden");
+        })
+    );
 
-    processAllData(allDataForAllPoets, compare);
+    Promise.all(promises).then(results => {
+        console.log("results:", results);
+        results.forEach(result => data.push(makePoetDataObject(result)));
+        console.log("data", data);
+        processAllData(data, compare);
+    });
 }
 
 function onPoetsEntered() {
@@ -110,9 +150,11 @@ function onPoetsEntered() {
             compare = true;
         }
 
-        // Get all of the data for individual and multiple poets.
-        getPoetData(poets, compare);
+        // Create array of all URLs to call
+        const allURLs = poets.map(constructPoetryDBUrl);
 
+        getAllPoetData(allURLs, compare); 
+        
         // Empty input box, uncheck checkbox.
         $("#poets").val("");
         $("#compare-poets").prop("checked", false);
@@ -122,6 +164,7 @@ function onPoetsEntered() {
 
 function runApp() {
     toggleCollapsibleMenus();
+    validateForm();
     onPoetsEntered();
 }
 
