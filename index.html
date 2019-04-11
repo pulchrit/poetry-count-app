@@ -17,6 +17,11 @@
         <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
         <!--Link to custom css-->
         <link rel="stylesheet" type="text/css" href="index.css">
+        <!--Link to HighCharts-->
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <!--Link to HighCharts-More, required for packed bubble chart-->
+        <script src="https://code.highcharts.com/highcharts-more.js"></script>
+
     
     </head>
 
@@ -95,7 +100,9 @@
 
             <section class="js-error hidden"></section>
 
-            <section class="js-results hidden"></section>
+            <section class="js-results hidden">
+                <div class="aggregate-chart" id="container"></div>
+            </section>
 
         </main>
 

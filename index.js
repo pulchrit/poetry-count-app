@@ -38,8 +38,10 @@ function validateForm() {
     }); 
 }
 
+// Global data structure for data pull from API. 
 const allData = [];
 
+// Helper function for getAllPoetData.
 function makePoetDataObject(results) {
     return {
         name: results[0].author,
@@ -57,6 +59,7 @@ function makePoetDataObject(results) {
         return queryItems.join("&");
 }  */
 
+// Helper function for onPoetsEntered.
 // Leaving this as a function in case I change to an API with 
 // more required parameters. 
 function constructPoetryDBUrl(poet) {
@@ -78,6 +81,7 @@ function constructPoetryDBUrl(poet) {
     }; */
 }
 
+// Helper function for getAggregateArrayOfWords and makeSeparateWordsObject.
 function flattenToWordsOnly(currentPoetObject) {
     return currentPoetObject.individualData.flatMap(currentPoetData => {
         return currentPoetData.lines.flatMap(line => { 
@@ -88,39 +92,6 @@ function flattenToWordsOnly(currentPoetObject) {
     });
 }
 
-/* function getArrayOfWords(allData, compare) {
-
-    if (compare) {
-
-        const words = allData.map(currentPoetObject => flattenToWordsOnly(currentPoetObject));
-        
-        return words.map(currentWordArray => {
-            return currentWordArray.filter(word => word != null)});
-       
-    } else {
-
-        // Using nested flatMaps to get down to the words in each poem. 
-        // Changing each word to lowercase, removing punctuation marks (except 
-        // apostrophes and hyphens), removing empty strings and nulls (see below
-        // for more on null). 
-        const words = allData.flatMap(currentPoetObject => flattenToWordsOnly(currentPoetObject));//{
-
-            /* return currentPoetObject.individualData.flatMap(currentPoetData => {
-                return currentPoetData.lines.flatMap(line => { 
-                    return line.toLowerCase().split(" ").flatMap(word => {
-                    return word.match(/[a-z'-]+/g);  
-                    });
-                });
-            }); */
-    // });
-
-        // Need to do a secondary filter to remove several pesky nulls that weren't
-        // removed with the match(regex) above. I'm not exactly sure why they are there...
-        // Regardless, this extra step removes them and ensures we have an array of only words. 
-    /*     return words.filter(word => word !== null);
-    }
-   
-}  */
  
 function getAggregateArrayOfWords(allData) {
 
@@ -128,17 +99,7 @@ function getAggregateArrayOfWords(allData) {
     // Changing each word to lowercase, removing punctuation marks (except 
     // apostrophes and hyphens), removing empty strings and nulls (see below
     // for more on null). 
-    //const words = allData.flatMap(currentPoetObject => flattenToWordsOnly(currentPoetObject));
     const words = allData.flatMap(flattenToWordsOnly);
-
-        /* return currentPoetObject.individualData.flatMap(currentPoetData => {
-            return currentPoetData.lines.flatMap(line => { 
-                return line.toLowerCase().split(" ").flatMap(word => {
-                   return word.match(/[a-z'-]+/g);  
-                });
-            });
-        }); 
-    }); */
 
     // Need to do a secondary filter to remove several pesky nulls that weren't
     // removed with the match(regex) above. I'm not exactly sure why they are there...
@@ -147,6 +108,7 @@ function getAggregateArrayOfWords(allData) {
    
 } 
 
+// Helper function for getIndividualArraysOfWords.
 // Saving new object that relates poet to their list of words.
 // This is so I can identify the words by poet name (which is 
 // pretty obvious, I guess. :) )
@@ -171,7 +133,9 @@ function getIndividualArraysOfWords(allData) {
 
 }
 
-// Reduces an array to an object of word frequency.
+// Helper function for getIndividualWordFrequencyAnalysis and 
+// getAggregateWordFrequencyAnalysis.
+// Reduces an array to an object of word frequencies.
 // {word1: 13, word2: 44, ...}
 function reduceWordArrayToWordFrequency(wordArray) {
     return wordArray.reduce(
@@ -205,6 +169,63 @@ function getAggregateWordFrequencyAnalysis(aggregateWordArray) {
     return reduceWordArrayToWordFrequency(aggregateWordArray);
 }
 
+function mapWordFrequencyToChartSeries() {
+
+}
+
+function createIndividualComparisonChart(individualPoetWordFrequency) {
+    
+    //const poetSeries = [];
+
+
+    const poetSeries = Object.keys(individualPoetWordFrequency).map(key => {
+        return {
+            name: key,
+            data: Object.keys(individualPoetWordFrequency[key]).map(wordKey => {
+                return {
+                    value: individualPoetWordFrequency[key][wordKey],
+                    name: wordKey
+                };
+            })
+        };
+    });
+
+  /*   const poetSeries = [
+        Object.keys(individualPoetWordFrequency).forEach(key => {
+            return {
+                name: key,
+                data: [Object.keys(individualPoetWordFrequency[key]).forEach(wordKey => {
+                    return {
+                        value: individualPoetWordFrequency[key][wordKey],
+                        name: wordKey
+                    };
+                })]
+            };
+        })
+    ];
+ */
+    console.log("poetSeries:", poetSeries);
+
+    return Highcharts.chart('container', {
+        chart: {
+          type: 'packedbubble'
+        },
+        series: poetSeries
+      });
+    
+    
+   /*  return Highcharts.chart('container', {
+        chart: {
+          type: 'packedbubble'
+        },
+        series: [{
+          data: [50, 12, 33, 45, 60]
+        }]
+      }); */
+}
+
+
+
 function processAllData(allData, compare) {
     
     console.log("allData array:", allData);
@@ -215,12 +236,19 @@ function processAllData(allData, compare) {
         .join(", ");
 
     $(".js-results").html(`Results for: ${poetNameString}`).removeClass("hidden");
+    
+    
+    $(".js-results").append(`
+        <div class="aggregate-chart" id="container"></div>
+    `);
+
+
 
 
     // Get word arrays: 
     
-    // If compare is checked, an additional word array will be created
-    // containing objects with word arrays for each poet. 
+    // If compare is checked, an additional data structure will be created
+    // containing information for each individual poet. 
     let individualWordArrayOfObjects = [];
     let individualPoetWordFrequency;
     if (compare) {
@@ -229,8 +257,12 @@ function processAllData(allData, compare) {
         individualWordArrayOfObjects = getIndividualArraysOfWords(allData);
 
         // Get a word frequency object for each individual poet.
+        // { Shakespeare: {word1: 1, word2: 15}, "Emily Dickinson": {word1: 15, word2: 25}, ...}
         individualPoetWordFrequency = getIndividualWordFrequencyAnalysis(individualWordArrayOfObjects);
 
+        // Create packed bubble chart using HighCharts from word frequency object.
+        createIndividualComparisonChart(individualPoetWordFrequency);
+        
         // create poem object for each poet
 
         // create data table for each poet
@@ -245,6 +277,7 @@ function processAllData(allData, compare) {
     const aggregateWordArray = getAggregateArrayOfWords(allData);
     
     // Get word frequency object for single or aggregate poets.
+    // {word1: 45, word2: 16, word3: 1,...}
     const aggregateWordFrequencyAnalysis = reduceWordArrayToWordFrequency(aggregateWordArray)
     
     console.log("aggregateWordFrequency:", aggregateWordFrequencyAnalysis);
@@ -260,6 +293,7 @@ function processAllData(allData, compare) {
 
 } 
 
+// Helper function for getAllPoetData.
 function handleResponseErrors(response) {
     if (!response.ok) {
         throw Error(response.statusText);
@@ -337,6 +371,7 @@ function runApp() {
     toggleCollapsibleMenus();
     validateForm();
     onPoetsEntered();
+
 }
 
 $(runApp);
