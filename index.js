@@ -86,7 +86,7 @@ function flattenToWordsOnly(currentPoetObject) {
     return currentPoetObject.individualData.flatMap(currentPoetData => {
         return currentPoetData.lines.flatMap(line => { 
             return line.toLowerCase().split(" ").flatMap(word => {
-               return word.match(/[a-z'-]+/g);  
+               return word.match(/[a-z']+/g);  
             });
         });
     });
@@ -134,6 +134,52 @@ function getIndividualArraysOfWords(allData) {
 }
 
 // Helper function for getIndividualWordFrequencyAnalysis and 
+// to get the AggregateWordFrequencyAnalysis.
+// Filters out common words like "a", "the", "and" from the Object. 
+// Converts object to array of subarrays to sort results and restrict to top 100.
+// Then converts back to an object. 
+// I'm sure there is a better way to do this... 
+function filterAndRestrictWordFrequency(wordFrequency) {
+    
+    // Iterate over keys, delete keys (and thereby values) that are 
+    // in the notTheseWords array. These words don't have a lot of meaning
+    // when taken out of the context of their sentences.
+    const notTheseWords = ["a", "and", "as", "at", "but", "by", "for", "from", 
+                            "in", "it", "its", "of", "on", "or", "that", 
+                            "the", "then", "this", "these", "those", "though", 
+                            "to", "upon", "with"];
+    
+    // Delete key/value pairs that are in the notTheseWords array.
+    Object.keys(wordFrequency).forEach(key => {
+        if (notTheseWords.includes(key.toString())) {
+            delete wordFrequency[key];
+        }
+    });
+
+    // Convert wordFrequency object to an array of subarrays and sort. 
+    // Attribution: https://stackoverflow.com/questions/1069666/sorting-javascript-object-by-property-value
+    var sortWordFrequency = [];
+    for (let word in wordFrequency) {
+        sortWordFrequency.push([word, wordFrequency[word]]);
+    }
+    
+    sortWordFrequency.sort((a, b) => {
+        return b[1] - a[1];
+    });
+
+    // Slice off first 100 words of sorted array.
+    let first100Words = sortWordFrequency.slice(0, 100);
+
+    // Reduce array to new word frequency object for top 100 words.
+    // {word1: 34, word2: 23...}
+    return first100Words.reduce((first100, currentWordArray) => {
+        first100[currentWordArray[0]] = currentWordArray[1];
+        return first100;
+    }, {});
+
+}
+
+// Helper function for getIndividualWordFrequencyAnalysis and 
 // getAggregateWordFrequencyAnalysis.
 // Reduces an array to an object of word frequencies.
 // {word1: 13, word2: 44, ...}
@@ -156,28 +202,31 @@ function getIndividualWordFrequencyAnalysis(individualWordArrayOfObjects) {
     const individualPoetWordFrequency = {}; 
     
     individualWordArrayOfObjects.forEach(currentPoet => {
-        individualPoetWordFrequency[currentPoet.poet] = reduceWordArrayToWordFrequency(currentPoet.justWords);
+        individualPoetWordFrequency[currentPoet.poet] = 
+            filterAndRestrictWordFrequency(reduceWordArrayToWordFrequency(currentPoet.justWords));
     });
 
     return individualPoetWordFrequency;
 }
 
+////////////// This function may be unnecessary!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // Produces a word frequency object for the aggregate of multiple poets or for 
 // a single poet.
 // {word1: 45, word2: 16, word3: 1,...}
-function getAggregateWordFrequencyAnalysis(aggregateWordArray) {
-    return reduceWordArrayToWordFrequency(aggregateWordArray);
-}
+/* function getAggregateWordFrequencyAnalysis(aggregateWordArray) {
+    //return reduceWordArrayToWordFrequency(aggregateWordArray);
+    //return filterAndRestrictWordFrequency(reduceWordArrayToWordFrequency(aggregateWordArray));
+    return filterAndRestrictWordFrequency(reduceWordArrayToWordFrequency(aggregateWordArray));
+} */
 
-function mapWordFrequencyToChartSeries() {
+/* function mapWordFrequencyToChartSeries() {
 
-}
+} */
 
+// Creates a data series for each poet when compare is checked. Highcharts will 
+// plot the multiple data series together on a single chart for comparison.
 function createIndividualComparisonChart(individualPoetWordFrequency) {
     
-    //const poetSeries = [];
-
-
     const poetSeries = Object.keys(individualPoetWordFrequency).map(key => {
         return {
             name: key,
@@ -190,20 +239,6 @@ function createIndividualComparisonChart(individualPoetWordFrequency) {
         };
     });
 
-  /*   const poetSeries = [
-        Object.keys(individualPoetWordFrequency).forEach(key => {
-            return {
-                name: key,
-                data: [Object.keys(individualPoetWordFrequency[key]).forEach(wordKey => {
-                    return {
-                        value: individualPoetWordFrequency[key][wordKey],
-                        name: wordKey
-                    };
-                })]
-            };
-        })
-    ];
- */
     console.log("poetSeries:", poetSeries);
 
     return Highcharts.chart('container', {
@@ -261,7 +296,7 @@ function processAllData(allData, compare) {
         individualPoetWordFrequency = getIndividualWordFrequencyAnalysis(individualWordArrayOfObjects);
 
         // Create packed bubble chart using HighCharts from word frequency object.
-        createIndividualComparisonChart(individualPoetWordFrequency);
+      //  createIndividualComparisonChart(individualPoetWordFrequency);
         
         // create poem object for each poet
 
@@ -278,7 +313,7 @@ function processAllData(allData, compare) {
     
     // Get word frequency object for single or aggregate poets.
     // {word1: 45, word2: 16, word3: 1,...}
-    const aggregateWordFrequencyAnalysis = reduceWordArrayToWordFrequency(aggregateWordArray)
+    const aggregateWordFrequencyAnalysis = filterAndRestrictWordFrequency(reduceWordArrayToWordFrequency(aggregateWordArray));
     
     console.log("aggregateWordFrequency:", aggregateWordFrequencyAnalysis);
     console.log("individualPoetWordFrequency:", individualPoetWordFrequency);
