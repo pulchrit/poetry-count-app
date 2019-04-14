@@ -1,19 +1,29 @@
 'use strict';
 
+// Helper function for toggleCollapsibleMenus.
+function togglePredefinedSearchesVisibility() {
+    $(".js-predefined-searches-list").toggleClass("hidden");
+    $(".js-predefined-searches").toggleClass("searches-collapsible searches-active");
+   
+}
+
+// Helper function for toggleCollapsibleMenus.
+function togglePoetSearchVisbility() {
+    $(".js-poet-search-form").toggleClass("hidden");
+    $(".js-poet-search").toggleClass("searches-collapsible searches-active");
+   
+}
 
 // Opens/closes 'Search poets' and 'Predefined searches' on mobile/smaller screens.
 // May not be necessary for larger screens.
 function toggleCollapsibleMenus() {
     
-    $(".js-predefined-searches").click(function() {
-        $(".js-predefined-searches-list").toggleClass("hidden");
-        $(".js-predefined-searches").toggleClass("searches-collapsible searches-active ");
-    });
+    $(".js-predefined-searches").click(togglePredefinedSearchesVisibility);
+    $(".individual-searches").click(togglePredefinedSearchesVisibility);
 
-    $(".js-poet-search").click(function() {
-        $(".js-poet-search-form").toggleClass("hidden");
-        $(".js-poet-search").toggleClass("searches-collapsible searches-active");
-    });
+    $(".js-poet-search").click(togglePoetSearchVisbility);
+    $(".js-poet-search-form").submit(togglePoetSearchVisbility);
+    
 }
 
 // For multiple poets, only a comma delimited list with no spaces is acceptable.
@@ -39,7 +49,7 @@ function validateForm() {
 }
 
 // Global data structure for data pull from API. 
-const allData = [];
+//const allData = [];
 
 // Helper function for getAllPoetData.
 function makePoetDataObject(results) {
@@ -49,36 +59,12 @@ function makePoetDataObject(results) {
     };
 }
 
-// Won't need this function if I stay with PoetryDb, but 
-// leaving it in for now just in case. 
-/* function formatQueryParams(params) {
-
-    const queryItems = Object.keys(params)
-        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`);
-    
-        return queryItems.join("&");
-}  */
-
 // Helper function for onPoetsEntered.
 // Leaving this as a function in case I change to an API with 
 // more required parameters. 
 function constructPoetryDBUrl(poet) {
     return `http://poetrydb.org/author/${poet}`;
 
-    /* const params = {
-        author: states,
-        limit: maxResults - 1,
-        fields: "addresses",
-        api_key: npsApikey,
-    };
-
-    const url = `${baseUrl}${formatQueryParams(params)}`; */
-
-    /* const options = {
-        headers: new Headers({
-        'accept': 'application/json'
-        })
-    }; */
 }
 
 // Helper function for getAggregateArrayOfWords and makeSeparateWordsObject.
@@ -91,7 +77,6 @@ function flattenToWordsOnly(currentPoetObject) {
         });
     });
 }
-
  
 function getAggregateArrayOfWords(allData) {
 
@@ -123,7 +108,6 @@ function makeSeparateWordsObject(currentPoetObject) {
 function getIndividualArraysOfWords(allData) {
 
     const separateWords = allData.map(makeSeparateWordsObject);
-    console.log("separateWords", separateWords);
 
     separateWords.forEach(IndividualPoetWordsObject => {
         IndividualPoetWordsObject.justWords = IndividualPoetWordsObject.justWords.filter(word => word !== null);
@@ -147,7 +131,7 @@ function filterAndRestrictWordFrequency(wordFrequency) {
     const notTheseWords = ["a", "and", "as", "at", "but", "by", "for", "from", 
                             "in", "it", "its", "of", "on", "or", "that", 
                             "the", "then", "this", "these", "those", "though", 
-                            "to", "upon", "with"];
+                            "to", "upon", "with", "'"];
     
     // Delete key/value pairs that are in the notTheseWords array.
     Object.keys(wordFrequency).forEach(key => {
@@ -209,77 +193,235 @@ function getIndividualWordFrequencyAnalysis(individualWordArrayOfObjects) {
     return individualPoetWordFrequency;
 }
 
-////////////// This function may be unnecessary!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// Produces a word frequency object for the aggregate of multiple poets or for 
-// a single poet.
-// {word1: 45, word2: 16, word3: 1,...}
-/* function getAggregateWordFrequencyAnalysis(aggregateWordArray) {
-    //return reduceWordArrayToWordFrequency(aggregateWordArray);
-    //return filterAndRestrictWordFrequency(reduceWordArrayToWordFrequency(aggregateWordArray));
-    return filterAndRestrictWordFrequency(reduceWordArrayToWordFrequency(aggregateWordArray));
-} */
+function createPoetDivs(poetNamesArray) {
+    poetNamesArray.forEach(poet => $(".individual").append(
+        `<div class="charts-style" id="${poet}"></div`));
+}
 
-/* function mapWordFrequencyToChartSeries() {
-
-} */
-
-// Creates a data series for each poet when compare is checked. Highcharts will 
-// plot the multiple data series together on a single chart for comparison.
-function createIndividualComparisonChart(individualPoetWordFrequency) {
+// Creates highcharts for each poet.
+function createIndividualComparisonCharts(individualPoetWordFrequency) {
     
-    const poetSeries = Object.keys(individualPoetWordFrequency).map(key => {
-        return {
-            name: key,
-            data: Object.keys(individualPoetWordFrequency[key]).map(wordKey => {
+    $(".individual").prepend(`
+        <button type="button" class="table-poem-button-styles" id="js-individualTable-button">View data table</button>
+        <button type="button" class="table-poem-button-styles id="js-individualPoems-button">View poems</button>`);
+
+    // { Shakespeare: {word1: 1, word2: 15}, "Emily Dickinson": {word1: 15, word2: 25}, ...}
+    // poets in an array
+    const poetNamesArray = Object.keys(individualPoetWordFrequency);
+
+    // Create divs with ids equaling poet names.
+    createPoetDivs(poetNamesArray);
+
+    // Create data array and chart for each poet.    
+    Object.keys(individualPoetWordFrequency).forEach(poet => {
+
+        // create the data for each poet 
+        let individualPoetData = Object.keys(individualPoetWordFrequency[poet]).map(word => {
+            return {
+                name: word,
+                weight: individualPoetWordFrequency[poet][word]
+            };
+        });
+
+
+        // create a highchart for each poet
+        //return Highcharts.chart({
+        Highcharts.chart(poet, {
+            /* chart: {
+                renderTo: key
+            }, */
+            series: [{
+                type: 'wordcloud',
+                data: individualPoetData,
+                name: 'Occurrences'
+            }],
+            plotOptions: {
+                series: {
+                    minFontSize: 5,
+                    maxFontSize: 55
+                }
+            },
+            title: {
+                text: "Top 100 Words for " + poet
+            },
+            credits: {
+                enabled: false
+            }
+        });
+    })
+}
+
+// Creates a chart for either a single poet or multiple poets in aggregate. 
+function createAggregateComparisonChart(aggregateWordFrequencyAnalysis, poetNameString) {
+    
+    const aggregatePoetData = Object.keys(aggregateWordFrequencyAnalysis).map(wordKey => {
                 return {
-                    value: individualPoetWordFrequency[key][wordKey],
-                    name: wordKey
+                    name: wordKey,
+                    weight: aggregateWordFrequencyAnalysis[wordKey]
                 };
-            })
-        };
-    });
+            });
+     
+    // Add view data table and view poems buttons.
+    $(".singleAggregate").prepend(
+        `<button type="button" class="table-poem-button-styles" id="js-table-button">View data table</button>
+        <button type="button" class="table-poem-button-styles" id="js-poems-button">View poems</button>`);
 
-    console.log("poetSeries:", poetSeries);
-
-    return Highcharts.chart('container', {
-        chart: {
-          type: 'packedbubble'
-        },
-        series: poetSeries
-      });
+    // Create div to hold chart. 
+    $(".singleAggregate").append(
+        `<div class="charts-style" id="aggregateChart"></div`);
     
-    
-   /*  return Highcharts.chart('container', {
-        chart: {
-          type: 'packedbubble'
-        },
+    return Highcharts.chart("aggregateChart", {
         series: [{
-          data: [50, 12, 33, 45, 60]
-        }]
-      }); */
+            type: 'wordcloud',
+            data: aggregatePoetData,
+            name: 'Occurrences'
+        }],
+        plotOptions: {
+            series: {
+                minFontSize: 5,
+                maxFontSize: 55
+            }
+        },
+        title: {
+            text: "Top 100 Words for " + poetNameString
+        },
+        credits: {
+            enabled: false
+        }
+    });
 }
 
 
+// Helper function for create chart functions.
+function createPoetNameString(allData) {
+    
+    return allData.map(currentPoet => currentPoet.name).join(", ");
+  
+}
+
+function displayResults() {
+    
+    $(".js-results").removeClass("hidden");
+    $(".js-error").addClass("hidden");
+
+}
+
+function createIndividualDataTable(individualPoetWordFrequency) {
+
+    // Reduce word frequency object to get sum of occurences to calculate percentage below.
+    // From this: { Shakespeare: {word1: 1, word2: 15}, "Emily Dickinson": {word1: 15, word2: 25}, ...}
+    // To this: {Shakespear: 345, Emily: 3321, ...}
+    const occurencesTotalByPoet = Object.keys(individualPoetWordFrequency).reduce((poetAccumulator, currentPoet) => {
+        poetAccumulator[currentPoet] = Object.keys(individualPoetWordFrequency[currentPoet]).reduce((total, currentVal) => {
+            return total += individualPoetWordFrequency[currentPoet][currentVal]}, 0);
+        return poetAccumulator;
+    }, {});    
+
+    // Create view charts and view poems buttons and create beginning of table.
+    let tableString = `
+        <button type="button" class="table-poem-button-styles" id="js-charts-button">View charts</button>
+        <button type="button" class="table-poem-button-styles" id="js-poems-button">View poems</button>
+        
+        <table>
+        <caption>Data for: ${Object.keys(individualPoetWordFrequency).join(", ")}</caption>
+
+        <thead>
+            <tr>
+                <th scope="col">Poet</th>
+                <th scope="col">Word</th>
+                <th scope="col">Occurences</th>
+                <th scope="col">% for Poet</th>
+            </tr>
+        </thead>
+
+        <tbody>`;
+    
+    // Get table rows from individualPoetWordFrequency.
+    const tableRowsArray = Object.keys(individualPoetWordFrequency).map(poet => {
+        return Object.keys(individualPoetWordFrequency[poet]).map(word => {
+            return `<tr>
+                        <td>${poet}</td>
+                        <td>${word}</td>
+                        <td>${individualPoetWordFrequency[poet][word]}</td>
+                        <td>${((individualPoetWordFrequency[poet][word]/occurencesTotalByPoet[poet])*100).toFixed(1)}%</td>
+                    </tr>`;
+        }).join("\n");
+    });
+
+    tableString += tableRowsArray.join("\n");
+    tableString += `
+        </tbody>
+        </table>`;
+
+    return tableString;
+    
+}
+
+function handleViewIndividualDataTableClicked(individualPoetWordFrequency) {
+    $(".js-results").on('click', "#js-individualTable-button", function(event) {
+        $(".individual").html(createIndividualDataTable(individualPoetWordFrequency));
+    })
+   
+}
+
+function createAggregateDataTable(aggregateWordFrequencyAnalysis, poetNameString) {
+
+    // Reduce word frequency object to get sum of occurences to calculate percentage below.
+    const occurencesTotal = Object.keys(aggregateWordFrequencyAnalysis).reduce((total, currentVal) => {
+        return total += aggregateWordFrequencyAnalysis[currentVal]}, 0);
+    
+    // Create view charts and view poems buttons and create beginning of table.
+    let tableString = `
+        <button type="button" class="table-poem-button-styles" id="js-charts-button">View charts</button>
+        <button type="button" class="table-poem-button-styles" id="js-poems-button">View poems</button>
+        
+        <table>
+        <caption>Data for: ${poetNameString}</caption>
+
+        <thead>
+            <tr>
+                <th scope="col">Word</th>
+                <th scope="col">Occurences</th>
+                <th scope="col">Percentage</th>
+            </tr>
+        </thead>
+
+        <tbody>`;
+    
+    // Map keys of object to create array of strings, then join with \n 
+    const tableRowsArray = Object.keys(aggregateWordFrequencyAnalysis).map(word => {
+        return `<tr>
+                    <td>${word}</td>
+                    <td>${aggregateWordFrequencyAnalysis[word]}</td>
+                    <td>${((aggregateWordFrequencyAnalysis[word]/occurencesTotal)*100).toFixed(1)}%</td>
+                </tr>`;
+    });
+
+    tableString += tableRowsArray.join("\n");
+    tableString += `
+        </tbody>
+        </table>`;
+
+    return tableString;
+    
+}
+
+function handleViewAggregateDataTableClicked(aggregateWordFrequencyAnalysis, poetNames) {
+    $(".js-results").on('click', "#js-table-button", function(event) {
+        $(".singleAggregate").html(createAggregateDataTable(aggregateWordFrequencyAnalysis, poetNames));
+    })
+}
+
+/* function  getIndividualPoemsByPoet(allData) {
+    return allData.reduces
+} */
 
 function processAllData(allData, compare) {
+        
+    displayResults();
+
+    const poetNames = createPoetNameString(allData);
     
-    console.log("allData array:", allData);
-
-    // move below into display function!!!!!!!!!!!!!!!!
-    const poetNameString = allData
-        .map(currentPoet => currentPoet.name)
-        .join(", ");
-
-    $(".js-results").html(`Results for: ${poetNameString}`).removeClass("hidden");
-    
-    
-    $(".js-results").append(`
-        <div class="aggregate-chart" id="container"></div>
-    `);
-
-
-
-
     // Get word arrays: 
     
     // If compare is checked, an additional data structure will be created
@@ -295,13 +437,22 @@ function processAllData(allData, compare) {
         // { Shakespeare: {word1: 1, word2: 15}, "Emily Dickinson": {word1: 15, word2: 25}, ...}
         individualPoetWordFrequency = getIndividualWordFrequencyAnalysis(individualWordArrayOfObjects);
 
+        // Get an object relating each poem array to each poet.
+        // {Shakespeare: [{poem: 1, title: "title", lines: ["line1", "line2"]}, {}],
+        // Emily Dickinson: [{poem: 1, title: "title", lines: ["line1", "line2"]}, {}]}
+        //individualPoemsByPoetObject = getIndividualPoemsByPoet(allData);
+
         // Create packed bubble chart using HighCharts from word frequency object.
-      //  createIndividualComparisonChart(individualPoetWordFrequency);
-        
-        // create poem object for each poet
+        createIndividualComparisonCharts(individualPoetWordFrequency);
 
         // create data table for each poet
+        handleViewIndividualDataTableClicked(individualPoetWordFrequency);
+        
+        // create poem object for each poet 
+        // handleViewPoemsClicked()
+        
     }
+    console.log("allData", allData);
 
     // All of the following data structures will always be created. They are either
     // for when a single poet is entered or for when only aggregate information is 
@@ -313,18 +464,19 @@ function processAllData(allData, compare) {
     
     // Get word frequency object for single or aggregate poets.
     // {word1: 45, word2: 16, word3: 1,...}
-    const aggregateWordFrequencyAnalysis = filterAndRestrictWordFrequency(reduceWordArrayToWordFrequency(aggregateWordArray));
+    const aggregateWordFrequencyAnalysis = 
+        filterAndRestrictWordFrequency(reduceWordArrayToWordFrequency(aggregateWordArray));
     
-    console.log("aggregateWordFrequency:", aggregateWordFrequencyAnalysis);
-    console.log("individualPoetWordFrequency:", individualPoetWordFrequency);
 
-
-    // Create packed bubble chart using HighCharts from word frequncy object
-
-    // Create data table from word frequency chart
-
-    // Display poems from addData (first need to get the poems into an object and allow for COMPARE being true)
+    // Create and display packed bubble chart using HighCharts from word frequncy object
+    createAggregateComparisonChart(aggregateWordFrequencyAnalysis, poetNames);
     
+    // Create data table from word frequency chart.
+    handleViewAggregateDataTableClicked(aggregateWordFrequencyAnalysis, poetNames);
+    
+    // Create and display poems for all poets (same for single, multiple or multiple compared).
+    //const poemsArray = createPoemsArray(allData);
+    //handleViewPoemsClicked(poemsArray);
 
 } 
 
@@ -341,6 +493,8 @@ function handleResponseErrors(response) {
 // Attribution: http://tinyurl.com/y5vm3eu8
 function getAllPoetData(allURLS, compare) {
 
+    const allData = [];
+
     let promises = allURLS.map(url => 
         fetch(url)
         .then(handleResponseErrors)
@@ -349,10 +503,13 @@ function getAllPoetData(allURLS, compare) {
         // poet name and it's important to include it in the error message.
         .then(responseJSON => {
             if (responseJSON.status === 404) {
-            throw Error(`The poet, ${poet}, was ${responseJSON.reason.toLowerCase()} in the PoetryDB. 
-            Please enter a new search with a different poet.`);
+            throw Error ("Poet or poets were not found.")
+            //throw Error(`The poet, ${poet}, was ${responseJSON.reason.toLowerCase()} in the PoetryDB. 
+            //Please enter a new search with a different poet.`);
+            } else {
+                return responseJSON;
             }
-            return responseJSON;
+            
         })
         .catch(error => {
             $(".js-error")
@@ -360,21 +517,33 @@ function getAllPoetData(allURLS, compare) {
                 `<p>Something isn't right:</p>
                 <p>${error}</p>`)
             .removeClass("hidden");
+            $(".js-results").addClass("hidden");
         })
     );
 
-    Promise.all(promises).then(results => {
-        console.log("results:", results);
-        results.forEach(result => allData.push(makePoetDataObject(result)));
-        console.log("data", allData);
-        processAllData(allData, compare);
-    });
+    // Because fetch() resolves 404 errors, even though I catch the 404s above, all promises
+    // still resolve into an array of undefined ([undefined]). To prevent the .then from trying
+    // to resolve [undefined], I check for [undefined] and return a message to the error element
+    // in the DOM instead of allowing the processing functions to be called with undefined and 
+    // throwing errors in future functions. 
+    Promise.all(promises)
+        .then(results => {
+            if (results[0] === undefined) {
+                return $(".js-error").append("Please try again.");
+            } else {
+                results.forEach(result => allData.push(makePoetDataObject(result)));
+                processAllData(allData, compare);
+            }
+        }) 
 }
 
 function onPoetsEntered() {
     
     $(".js-poet-search-form").submit(event => {
         event.preventDefault();
+
+        $(".singleAggregate").html("");
+        $(".individual").html("");
         
         // Get poet(s) entered and split into array
         // so that we can make individual calls to the

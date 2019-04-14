@@ -19,8 +19,8 @@
         <link rel="stylesheet" type="text/css" href="index.css">
         <!--Link to HighCharts-->
         <script src="https://code.highcharts.com/highcharts.js"></script>
-        <!--Link to HighCharts-More, required for packed bubble chart-->
-        <script src="https://code.highcharts.com/highcharts-more.js"></script>
+        <!--Link to HighCharts module for Word Chart-->
+        <script src="https://code.highcharts.com/modules/wordcloud.js"></script>
 
     
     </head>
@@ -101,14 +101,18 @@
             <section class="js-error hidden"></section>
 
             <section class="js-results hidden">
-                <div class="aggregate-chart" id="container"></div>
+                <div class="singleAggregate">
+                </div>
+                <div class="individual"></div>
+
             </section>
 
         </main>
 
         <footer role="contentinfo" class="footer">
             
-            <p>Powered by <a href="http://poetrydb.org/index.html">PoetryDB</a>.</p>
+            <p>Powered by <a href="http://poetrydb.org/index.html">PoetryDB</a> 
+                and <a href="https://www.highcharts.com/">Highcharts</a>.</p>
 
             <address>
                 &copy;2019  <a href="mailto:pulchrit@gmail.com">Melissa Lafranchise</a>

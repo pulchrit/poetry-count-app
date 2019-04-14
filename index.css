@@ -98,12 +98,14 @@ ul {
     font-weight: normal;
 }
 
-/* HighCharts container */
-#container {
-    min-width: 320px;
+
+/* HighCharts styles */
+.charts-style {
+    width: 100%;
+    min-width: 300px;
     max-width: 800px;
-    margin: 0 auto;
-  }
+    margin: 20; 
+}
 
 
 
