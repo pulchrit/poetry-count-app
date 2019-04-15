@@ -204,11 +204,9 @@ function createIndividualComparisonCharts(individualPoetWordFrequency) {
     // Clear out anything that might be there.
     $(".individual").html("");
 
-    console.log("createIndividualComparisonCharts ran");
-
     $(".individual").prepend(`
         <button type="button" class="table-poem-button-styles" id="js-individualTable-button">View data table</button>
-        <button type="button" class="table-poem-button-styles id="js-individualPoems-button">View poems</button>`);
+        <button type="button" class="table-poem-button-styles" id="js-poems-button">View poems</button>`);
 
     // { Shakespeare: {word1: 1, word2: 15}, "Emily Dickinson": {word1: 15, word2: 25}, ...}
     // poets in an array
@@ -377,7 +375,7 @@ function createAggregateDataTable(aggregateWordFrequencyAnalysis, poetNameString
     
     // Create view charts and view poems buttons and create beginning of table.
     let tableString = `
-        <button type="button" class="table-poem-button-styles" id="js-charts-button">View charts</button>
+        <button type="button" class="table-poem-button-styles" id="js-charts-button">View chart</button>
         <button type="button" class="table-poem-button-styles" id="js-poems-button">View poems</button>
         
         <table>
@@ -407,8 +405,7 @@ function createAggregateDataTable(aggregateWordFrequencyAnalysis, poetNameString
         </tbody>
         </table>`;
 
-    return tableString;
-    
+    return tableString; 
 }
 
 function handleViewAggregateDataTableClicked(aggregateWordFrequencyAnalysis, poetNames) {
@@ -417,12 +414,17 @@ function handleViewAggregateDataTableClicked(aggregateWordFrequencyAnalysis, poe
     })
 }
 
+function handleViewAllTablesClicked(individualPoetWordFrequency, aggregateWordFrequencyAnalysis, poetNames) {
+    $(".js-results").on("click", "#js-allTables-button", function(event) {
+        $(".singleAggregate").html(createAggregateDataTable(aggregateWordFrequencyAnalysis, poetNames));
+        $(".individual").html(createIndividualDataTable(individualPoetWordFrequency));
+    });
+}
+
 function handleViewIndividualChartsClicked(individualPoetWordFrequency) {
     $(".js-results").on("click", "#js-individualCharts-button", function(event) {
-        console.log("handleViewIndividualChartsClicked ran");
         createIndividualComparisonCharts(individualPoetWordFrequency);
     })
-     
 }
 
 function handleViewAggregateChartsClicked(aggregateWordFrequencyAnalysis, poetNames) {
@@ -430,9 +432,158 @@ function handleViewAggregateChartsClicked(aggregateWordFrequencyAnalysis, poetNa
         createAggregateComparisonChart(aggregateWordFrequencyAnalysis, poetNames);
     })
 }
-/* function  getIndividualPoemsByPoet(allData) {
-    return allData.reduces
-} */
+
+function handleViewAllChartsClicked(individualPoetWordFrequency, aggregateWordFrequencyAnalysis, poetNames) {
+    $(".js-results").on("click", "#js-allCharts-button", function(event) {
+        createAggregateComparisonChart(aggregateWordFrequencyAnalysis, poetNames);
+        createIndividualComparisonCharts(individualPoetWordFrequency);
+    });
+}
+
+// Create global object to track poem count.
+const poemCountTracking = {
+    count: 1,
+    
+    incrementCount: function() {
+        poemCountTracking.count++;
+    },
+
+    decrementCount: function() {
+        poemCountTracking.count--;
+    }
+};
+
+// Helper function for createPoemsArray.
+function createPoemViewerPoemObject(currentPoemObject, index) {
+    return {
+        poemNumber: index + 1,
+        title: currentPoemObject.title,
+        author: currentPoemObject.author,
+        lines: currentPoemObject.lines
+    };
+}
+
+// Helper function for processAllData to view poems.
+function createPoemsArray(allData) {
+
+    const aggregatePoems = allData.flatMap(currentPoetObject => {
+        return currentPoetObject.individualData.map(currentPoemObject => {
+            const index = currentPoetObject.individualData.indexOf(currentPoemObject);
+            return createPoemViewerPoemObject(currentPoemObject, index);
+        });
+    })
+
+    return aggregatePoems;
+}
+
+// Helper function for createPoemViewer.
+function getPoemObject(poemsArray, count) {
+    return poemsArray.find(poem => poem.poemNumber === count);
+}
+
+// Helper function for createPoemViewer.
+function createPoemViewerMenu(count, length) {
+    
+    // If count equals length, then this is the last poem, next button is inactive.
+    if (count === length) {
+        return `
+            <ul class="poem-viewer-menu-styles">
+                <li><button type="button" class="previous-next-styles" id="js-previous-poem">previous</button></li>
+                <li class="js-current-poem-number">${count} of ${length}</li>
+                <li><button type="button" class="previous-next-styles inactive-button">next</button></li>
+            </ul>`
+    // If count is 1, then this is first poem, previous button is inactive. 
+    } else if (count === 1) {
+        return `
+            <ul class="poem-viewer-menu-styles">
+                <li><button type="button" class="previous-next-styles inactive-button">previous</button></li>
+                <li class="js-current-poem-number">${count} of ${length}</li>
+                <li><button type="button" class="previous-next-styles" id="js-next-poem">next</button></li>
+            </ul>`
+    }
+    // Otherwise, this is a poem in the middle so both previous and next are active buttons. 
+    return `
+        <ul class="poem-viewer-menu-styles">
+            <li><button type="button" class="previous-next-styles" id="js-previous-poem">previous</button></li>
+            <li class="js-current-poem-number">${count} of ${length}</li>
+            <li><button type="button" class="previous-next-styles" id="js-next-poem">next</button></li>
+        </ul>`
+}
+
+// Helper function for createPoemString. Processes lines into <p> elements.
+function createPoemLinesString(linesArray) {
+    const poemLines = linesArray.map(line => {
+        if (line === "") {
+            return `<br>`;
+        } else if (line.startsWith("  ")) {
+            return `<p class="poem-lines-styles line-indented">${line}</p>`;
+        } else {
+            return `<p class="poem-lines-styles">${line}</p>`;
+        }
+    });
+    return poemLines.join("\n");
+}
+
+
+// Helper function for createPoemViewer.
+function createPoemString(poemObject) {
+    return `
+        <p class="poem-title-styles">${poemObject.title}</p>
+        <p class="poem-author-styles">By: ${poemObject.author}</p>
+        <div class="full-poem-styles">${createPoemLinesString(poemObject.lines)}</div>`
+}
+
+// Helper function for handleViewPoemsClicked. Same function works for
+// individual poets compared search and single/aggregate poet search. 
+function createPoemViewer(poemsArray, compare) {
+    
+    let poemViewerString;
+    
+    if (compare) {
+        poemViewerString = `
+            <button type="button" class="table-poem-button-styles" id="js-allCharts-button">View all charts</button>
+            <button type="button" class="table-poem-button-styles" id="js-allTables-button">View all data tables</button>
+            `
+    } else {
+        poemViewerString = `
+            <button type="button" class="table-poem-button-styles" id="js-charts-button">View chart</button>
+            <button type="button" class="table-poem-button-styles" id="js-table-button">View data table</button>
+            `
+    }
+    
+    const poemMenu = createPoemViewerMenu(poemCountTracking.count, poemsArray.length);
+    let poemObject = getPoemObject(poemsArray, poemCountTracking.count);
+    
+    poemViewerString += `
+        ${poemMenu}
+        ${createPoemString(poemObject)}
+        ${poemMenu}`
+
+    return poemViewerString;
+}
+
+// This function can be used for both individual comparison and single/aggregate searches. 
+// We will only show one poem viewer for all poets and poems. 
+function handleViewPoemsClicked(poemsArray, compare) {
+    $(".js-results").on("click", "#js-poems-button", function(event) {
+        $(".individual").html("");
+        $(".singleAggregate").html(createPoemViewer(poemsArray, compare));
+    })
+}
+
+function handleNextPoemClicked(poemsArray, compare) {
+    $(".js-results").on("click", "#js-next-poem", function(event) {
+        poemCountTracking.incrementCount();
+        $(".singleAggregate").html(createPoemViewer(poemsArray, compare));
+    })
+}
+
+function handlePreviousPoemClicked(poemsArray, compare) {
+    $(".js-results").on("click", "#js-previous-poem", function(event) {
+        poemCountTracking.decrementCount();
+        $(".singleAggregate").html(createPoemViewer(poemsArray, compare));
+    })
+}
 
 function processAllData(allData, compare) {
         
@@ -466,12 +617,10 @@ function processAllData(allData, compare) {
         
         // create data table for each poet
         handleViewIndividualDataTableClicked(individualPoetWordFrequency);
+
         
-        // create poem object for each poet 
-        // handleViewIndividualPoemsClicked()
-        
+            
     }
-    console.log("allData", allData);
 
     // All of the following data structures will always be created. They are either
     // for when a single poet is entered or for when only aggregate information is 
@@ -490,13 +639,21 @@ function processAllData(allData, compare) {
     // Create and display packed bubble chart using HighCharts from word frequncy object
     createAggregateComparisonChart(aggregateWordFrequencyAnalysis, poetNames);
     handleViewAggregateChartsClicked(aggregateWordFrequencyAnalysis, poetNames);
+
+    // Views both aggregate and individual charts from View Poems screen.
+    handleViewAllChartsClicked(individualPoetWordFrequency, aggregateWordFrequencyAnalysis, poetNames);
     
     // Create data table from word frequency chart.
     handleViewAggregateDataTableClicked(aggregateWordFrequencyAnalysis, poetNames);
+
+    // Views both aggregate and individual data tables from View Poems screen.
+    handleViewAllTablesClicked(individualPoetWordFrequency, aggregateWordFrequencyAnalysis, poetNames) 
     
     // Create and display poems for all poets (same for single, multiple or multiple compared).
-    //const poemsArray = createPoemsArray(allData);
-    //handleViewAggregatePoemsClicked(poemsArray);
+    const poemsArray = createPoemsArray(allData);
+    handleViewPoemsClicked(poemsArray, compare);
+    handleNextPoemClicked(poemsArray, compare);
+    handlePreviousPoemClicked(poemsArray, compare);
 
 } 
 
@@ -509,7 +666,7 @@ function handleResponseErrors(response) {
 }
 
 // Uses Promises.all() to wait for all fetch calls to resolve, then processes
-// responses into a global data structure. 
+// responses into a data structure. 
 // Attribution: http://tinyurl.com/y5vm3eu8
 function getAllPoetData(allURLS, compare) {
 

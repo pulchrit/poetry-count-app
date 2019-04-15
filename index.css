@@ -42,6 +42,10 @@ h2 {
     max-width: 600px;
 }
 
+button {
+    cursor: pointer;
+}
+
 .searches-collapsible, .searches-active {
     background-color: gray;
     color: white;
@@ -105,6 +109,36 @@ ul {
     min-width: 300px;
     max-width: 800px;
     margin: 20; 
+}
+
+.line-indented {
+    padding-left: 25px;
+}
+
+.poem-viewer-menu-styles {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.poem-title-styles {
+    font-weight: bold;
+}
+
+.poem-author-styles {
+    font-style: italic;
+}
+
+.previous-next-styles {
+    background: none;
+    border: none;
+    text-decoration: underline;
+}
+
+.inactive-button {
+    cursor: default;
+    text-decoration: none;
 }
 
 
