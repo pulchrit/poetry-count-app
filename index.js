@@ -200,7 +200,12 @@ function createPoetDivs(poetNamesArray) {
 
 // Creates highcharts for each poet.
 function createIndividualComparisonCharts(individualPoetWordFrequency) {
-    
+
+    // Clear out anything that might be there.
+    $(".individual").html("");
+
+    console.log("createIndividualComparisonCharts ran");
+
     $(".individual").prepend(`
         <button type="button" class="table-poem-button-styles" id="js-individualTable-button">View data table</button>
         <button type="button" class="table-poem-button-styles id="js-individualPoems-button">View poems</button>`);
@@ -261,14 +266,14 @@ function createAggregateComparisonChart(aggregateWordFrequencyAnalysis, poetName
                 };
             });
      
-    // Add view data table and view poems buttons.
-    $(".singleAggregate").prepend(
-        `<button type="button" class="table-poem-button-styles" id="js-table-button">View data table</button>
-        <button type="button" class="table-poem-button-styles" id="js-poems-button">View poems</button>`);
+    // Clear out anything that might be there.
+    $(".singleAggregate").html("");
 
-    // Create div to hold chart. 
-    $(".singleAggregate").append(
-        `<div class="charts-style" id="aggregateChart"></div`);
+    // Add view data and view poems buttons; create div to hold chart. 
+    $(".singleAggregate").append(`
+        <button type="button" class="table-poem-button-styles" id="js-table-button">View data table</button>
+        <button type="button" class="table-poem-button-styles" id="js-poems-button">View poems</button>
+        <div class="charts-style" id="aggregateChart"></div>`);
     
     return Highcharts.chart("aggregateChart", {
         series: [{
@@ -319,7 +324,7 @@ function createIndividualDataTable(individualPoetWordFrequency) {
 
     // Create view charts and view poems buttons and create beginning of table.
     let tableString = `
-        <button type="button" class="table-poem-button-styles" id="js-charts-button">View charts</button>
+        <button type="button" class="table-poem-button-styles" id="js-individualCharts-button">View charts</button>
         <button type="button" class="table-poem-button-styles" id="js-poems-button">View poems</button>
         
         <table>
@@ -358,7 +363,7 @@ function createIndividualDataTable(individualPoetWordFrequency) {
 }
 
 function handleViewIndividualDataTableClicked(individualPoetWordFrequency) {
-    $(".js-results").on('click', "#js-individualTable-button", function(event) {
+    $(".js-results").on("click", "#js-individualTable-button", function(event) {
         $(".individual").html(createIndividualDataTable(individualPoetWordFrequency));
     })
    
@@ -407,11 +412,24 @@ function createAggregateDataTable(aggregateWordFrequencyAnalysis, poetNameString
 }
 
 function handleViewAggregateDataTableClicked(aggregateWordFrequencyAnalysis, poetNames) {
-    $(".js-results").on('click', "#js-table-button", function(event) {
+    $(".js-results").on("click", "#js-table-button", function(event) {
         $(".singleAggregate").html(createAggregateDataTable(aggregateWordFrequencyAnalysis, poetNames));
     })
 }
 
+function handleViewIndividualChartsClicked(individualPoetWordFrequency) {
+    $(".js-results").on("click", "#js-individualCharts-button", function(event) {
+        console.log("handleViewIndividualChartsClicked ran");
+        createIndividualComparisonCharts(individualPoetWordFrequency);
+    })
+     
+}
+
+function handleViewAggregateChartsClicked(aggregateWordFrequencyAnalysis, poetNames) {
+    $(".js-results").on("click", "#js-charts-button", function(event) {        
+        createAggregateComparisonChart(aggregateWordFrequencyAnalysis, poetNames);
+    })
+}
 /* function  getIndividualPoemsByPoet(allData) {
     return allData.reduces
 } */
@@ -444,12 +462,13 @@ function processAllData(allData, compare) {
 
         // Create packed bubble chart using HighCharts from word frequency object.
         createIndividualComparisonCharts(individualPoetWordFrequency);
-
+        handleViewIndividualChartsClicked(individualPoetWordFrequency);
+        
         // create data table for each poet
         handleViewIndividualDataTableClicked(individualPoetWordFrequency);
         
         // create poem object for each poet 
-        // handleViewPoemsClicked()
+        // handleViewIndividualPoemsClicked()
         
     }
     console.log("allData", allData);
@@ -470,13 +489,14 @@ function processAllData(allData, compare) {
 
     // Create and display packed bubble chart using HighCharts from word frequncy object
     createAggregateComparisonChart(aggregateWordFrequencyAnalysis, poetNames);
+    handleViewAggregateChartsClicked(aggregateWordFrequencyAnalysis, poetNames);
     
     // Create data table from word frequency chart.
     handleViewAggregateDataTableClicked(aggregateWordFrequencyAnalysis, poetNames);
     
     // Create and display poems for all poets (same for single, multiple or multiple compared).
     //const poemsArray = createPoemsArray(allData);
-    //handleViewPoemsClicked(poemsArray);
+    //handleViewAggregatePoemsClicked(poemsArray);
 
 } 
 
