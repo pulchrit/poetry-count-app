@@ -52,11 +52,13 @@
                     <!-- Multiple poets can only be separated by commas, no spaces allowed. 
                         Hence the regex pattern: \S+ (meaning, no spaces, 1 or more times)-->
                     <label class="input-styles" for="poets">Enter poet (or poets separated by commas):
-                        <input type="text" id="poets" name="poets" required pattern="\S+" placeholder="Shakespeare,Emily Dickinson">
+                        <input type="text" id="poets" name="poets" required placeholder="Shakespeare, Emily Dickinson">
                     </label>
 
                     <!-- If compare is checked, then the value 'yes' will be passed on submit. -->
-                    <label class="input-styles" for="compare-poets">
+                    <label id="checkbox" for="compare-poets">
+                    <!-- <label class="hidden" id="checkbox" for="compare-poets"> May need if I 
+                        decide to make the checkbox conditional.-->
                         <input type="checkbox" id="compare-poets" name="compare-poets" value="yes">
                         See comparison charts for multiple poets
                     </label>
@@ -71,30 +73,23 @@
                 
                 <!-- Collapsible based on: https://www.w3schools.com/howto/howto_js_collapsible.asp -->
                 <button type="button" class="searches-collapsible js-predefined-searches">Predefined searches:</button>
-                <div class="collapsible-content hidden js-predefined-searches-list">
-                    <ul>
-                        <li class="search-categories">Individual poets
-                            <ul class="individual-searches">
-                                <li>Shel Silverstein</li>
-                                <li>Ursula K. LeGuin</li>
-                            </ul>
-                        </li>
+                <form role="form" class="collapsible-content hidden js-predefined-searches-list">
                         
-                        <li class="search-categories">Poetic movements
-                            <ul class="individual-searches">
-                                <li>Romantics</li>
-                                <li>Harlem Renaissance</li>
-                            </ul>
-                        </li>
+                        <label for="predefined-searches">Please select a poet or poets:</label>
+                        <select id="predefined-searches">
+                            <optgroup label="Individual poets">
+                                <option value="Jupiter Hammon">Jupiter Hammon</option>
+                                <option value="Edgar Allan Poe">Edgar Allan Poe</option>
+                            </optgroup>
+                            <optgroup label="Poets compared">
+                                <option value="William Shakespeare, Emily Dickinson">Shakespeare to Emily Dickinson</option>
+                                <option value="Katherine Philips, Walt Whitman">Katherine Philips to Walt Whitman</option>
+                            </optgroup>
+                        </select>
+                       
+                        <button class="input-styles" type="submit">Get results</button>
 
-                        <li class="search-categories">Poets compared
-                            <ul class="individual-searches">
-                                <li>Shakespeare to Allen Ginsberg</li>
-                                <li>Robert Frost to Homer</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
+                </form>
 
             </section>
 
