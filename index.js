@@ -445,11 +445,22 @@ const poemCountTracking = {
     count: 1,
     
     incrementCount: function() {
-        poemCountTracking.count++;
+        //poemCountTracking.count++;
+        this.count++;
     },
 
     decrementCount: function() {
-        poemCountTracking.count--;
+        //poemCountTracking.count--;
+        this.count--;
+    },
+
+    resetCount: function() {
+        //poemCountTracking.count = 1;
+        this.count = 1;
+    },
+
+    getCount: function() {
+        return this.count;
     }
 };
 
@@ -522,7 +533,8 @@ function createPoemViewerMenu(count, length) {
 // original layout.
 function createPoemLinesString(linesArray) {
     const poemLines = linesArray.map(line => {
-        if (line === "") {
+        if (!line) {
+        //if (line === "") {
             return `<br>`;
         } else if (line.startsWith("  ")) {
             return `<p class="poem-lines-styles line-indented">${line}</p>`;
@@ -562,9 +574,11 @@ function createPoemViewer(poemsArray, compare) {
             <button type="button" class="table-poem-button-styles" id="js-table-button">View data table</button>
             `
     }
+    console.log("count", poemCountTracking.getCount());
     
-    const poemMenu = createPoemViewerMenu(poemCountTracking.count, poemsArray.length);
-    let poemObject = getPoemObject(poemsArray, poemCountTracking.count);
+    const poemMenu = createPoemViewerMenu(poemCountTracking.getCount(), poemsArray.length);
+    let poemObject = getPoemObject(poemsArray, poemCountTracking.getCount());
+    console.log(poemObject);
     
     poemViewerString += `
         ${poemMenu}
@@ -580,12 +594,18 @@ function createPoemViewer(poemsArray, compare) {
 function handleViewPoemsClicked(poemsArray, compare) {
     $(".js-results").on("click", "#js-poems-button", function(event) {
         $(".individual").html("");
+        poemCountTracking.resetCount();
         $(".singleAggregate").html(createPoemViewer(poemsArray, compare));
     })
 }
 
+
 // Listen for Next poem click and show next poem in poems array.
 function handleNextPoemClicked(poemsArray, compare) {
+    // Need to unbind previous click events before adding a new one. This 
+    // will allow the prev/next buttons to work correctly when multiple 
+    // searches are performed during the same page load. 
+    $(".js-results").off("click", "#js-next-poem");
     $(".js-results").on("click", "#js-next-poem", function(event) {
         poemCountTracking.incrementCount();
         $(".singleAggregate").html(createPoemViewer(poemsArray, compare));
@@ -594,6 +614,10 @@ function handleNextPoemClicked(poemsArray, compare) {
 
 // Listen for previous poem click and show previous poem in poems array.
 function handlePreviousPoemClicked(poemsArray, compare) {
+    // Need to unbind previous click events before adding a new one. This 
+    // will allow the prev/next buttons to work correctly when multiple 
+    // searches are performed during the same page load. 
+    $(".js-results").off("click", "#js-previous-poem");
     $(".js-results").on("click", "#js-previous-poem", function(event) {
         poemCountTracking.decrementCount();
         $(".singleAggregate").html(createPoemViewer(poemsArray, compare));
