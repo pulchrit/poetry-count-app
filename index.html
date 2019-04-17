@@ -21,7 +21,6 @@
         <script src="https://code.highcharts.com/highcharts.js"></script>
         <!--Link to HighCharts module for Word Chart-->
         <script src="https://code.highcharts.com/modules/wordcloud.js"></script>
-
     
     </head>
 
@@ -37,12 +36,12 @@
         <main role="main">
 
             <p class="instructions">
-                Interested in seeing a different view of the themes or word choices of your 
+                Interested in seeing a different view of word choices of your 
                 favorite poets? Enter the name(s) below to perform a word freqency analysis, 
-                or choose one of the predefined searches. Results will be displayed in an 
-                interactive chart and data table. You can also view each poem used in the analysis.  
+                or choose one of the predefined searches. Results will be displayed in a 
+                word chart. You can also view the data or the poems used in the analysis.  
             </p>
-        
+                             
             <section class="search-poets-styles">
                 
                 <button type="button" class="searches-collapsible js-poet-search">Search poets:</button>
@@ -95,10 +94,17 @@
 
             <section class="js-error hidden"></section>
 
+            <section class="js-poet-list hidden">
+                <label for="poet-list">
+                    Apologies, the PoetryDB is really quite small. Please see list of available poets. 
+                    Make a selection to copy the poet name and then paste it into the search box. 
+                </label>
+                <select id="poet-list"></select>
+            </section>
+
             <section class="js-results hidden">
                 <div class="singleAggregate"></div>
                 <div class="individual"></div>
-
             </section>
 
         </main>

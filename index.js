@@ -1,11 +1,44 @@
 'use strict';
 
+function getPoetList() {
 
-// May add this or may change input text box to dropdown with options where multiple 
-// poets can be selected. The PoetryDB is really small...
-/* function getPoetsList() {
+    fetch("http://poetrydb.org/authors")
+    .then(handleResponseErrors)
+    .then(responseJSON => displayPoetsList(responseJSON))
+    .catch(error => {
+        $(".js-error")
+        .html(
+            `<p>${error}</p>`)
+        .removeClass("hidden");
+        $(".js-poet-list").removeClass("hidden");
+        $(".js-results").addClass("hidden");
+    })
+}
 
-} */
+// poetList = {authors: ["Adam Lindsay Gordon","Alan Seeger"...]}
+function createPoetsListString(responseJSON) {
+    return responseJSON.authors.map(poet => `<option class="poet-options">${poet}</option>`).join('\n'); 
+}
+
+// When a user's search returns an erro because the poet was not found. This function
+// calls the PoetryDB, gets, and displays a full list of poets actually in the database. 
+function displayPoetsList(responseJSON) {
+    $("#poet-list").html(createPoetsListString(responseJSON));
+} 
+
+// Attribution: https://hackernoon.com/copying-text-to-clipboard-with-javascript-df4d4988697f
+function enableCopySelectedPoetFromList() {
+    $("#poet-list").change(function() {
+        let selectedPoet = $("#poet-list option:selected").text();
+        const poetNameTextArea = document.createElement('textarea');
+        poetNameTextArea.value = selectedPoet;
+        document.body.appendChild(poetNameTextArea);
+        poetNameTextArea.select();
+        document.execCommand("copy"); 
+        document.body.removeChild(poetNameTextArea);
+    });
+}
+
 
 // Helper function for toggleCollapsibleMenus.
 function togglePredefinedSearchesVisibility() {
@@ -299,6 +332,7 @@ function createPoetNameString(allData) {
 function displayResults() {
     $(".js-results").removeClass("hidden");
     $(".js-error").addClass("hidden");
+    $(".js-poet-list").addClass("hidden");
 }
 
 // Create data tables for each poet when multiple poets are compared. 
@@ -534,7 +568,6 @@ function createPoemViewerMenu(count, length) {
 function createPoemLinesString(linesArray) {
     const poemLines = linesArray.map(line => {
         if (!line) {
-        //if (line === "") {
             return `<br>`;
         } else if (line.startsWith("  ")) {
             return `<p class="poem-lines-styles line-indented">${line}</p>`;
@@ -574,11 +607,9 @@ function createPoemViewer(poemsArray, compare) {
             <button type="button" class="table-poem-button-styles" id="js-table-button">View data table</button>
             `
     }
-    console.log("count", poemCountTracking.getCount());
     
     const poemMenu = createPoemViewerMenu(poemCountTracking.getCount(), poemsArray.length);
     let poemObject = getPoemObject(poemsArray, poemCountTracking.getCount());
-    console.log(poemObject);
     
     poemViewerString += `
         ${poemMenu}
@@ -718,25 +749,20 @@ function getAllPoetData(allURLS, compare) {
     let promises = allURLS.map(url => 
         fetch(url)
         .then(handleResponseErrors)
-        // I wasn't able to pass the poet name to a separate function, so
-        // I'm handling any 404 errors within Fetch because I can access the
-        // poet name and it's important to include it in the error message.
+        // Handle 404 errors that resolve, but are still errors for the user.
         .then(responseJSON => {
             if (responseJSON.status === 404) {
-            throw Error ("Poet or poets were not found.")
-            //throw Error(`The poet, ${poet}, was ${responseJSON.reason.toLowerCase()} in the PoetryDB. 
-            //Please enter a new search with a different poet.`);
+            throw Error (`Poet or poets were not found.`)
             } else {
                 return responseJSON;
-            }
-            
+            }  
         })
         .catch(error => {
             $(".js-error")
             .html(
-                `<p>Something isn't right:</p>
-                <p>${error}</p>`)
+                `<p>${error}</p>`)
             .removeClass("hidden");
+            $(".js-poet-list").removeClass("hidden");
             $(".js-results").addClass("hidden");
         })
     );
@@ -749,7 +775,7 @@ function getAllPoetData(allURLS, compare) {
     Promise.all(promises)
         .then(results => {
             if (results[0] === undefined) {
-                return $(".js-error").append("Please try again.");
+                return $(".js-error").prepend("Please try again.");
             } else {
                 results.forEach(result => allData.push(makePoetDataObject(result)));
                 processAllData(allData, compare);
@@ -821,10 +847,8 @@ function onPoetsEntered() {
 }
 
 function runApp() {
-    //getPoetsList(); May add this as a reference or may chagne text input to dropdown with 
-    // poet names. The PoetryDB is very small, so it might be less frustrating for users to 
-    // just pick a poet that is actually there instead of trying many unsuccessful searches.
-    // hideShowCompare(); May include this, but right now it doesn't work exactly as intended.
+    enableCopySelectedPoetFromList();
+    getPoetList();
     toggleCollapsibleMenus();
     onPoetsEntered();
     onPredefinedSearchSelected();
