@@ -90,23 +90,26 @@ function makePoetDataObject(results) {
         individualData: results
     };
 }
+
 //createString
 // Helper function for onPoetsEntered.
 function constructPoetryDBUrl(poet) {
     return `http://poetrydb.org/author/${poet}`;
 }
+
 //processData
 // Helper function for getAggregateArrayOfWords and makeSeparateWordsObject.
 // Returns a flattened array of words in lowercase, without punctuation.
 function flattenToWordsOnly(currentPoetObject) {
-    return currentPoetObject.individualData.flatMap(currentPoetData => {
-        return currentPoetData.lines.flatMap(line => { 
-            return line.toLowerCase().split(" ").flatMap(word => {
-               return word.match(/[a-z'’]+/g);  
-            });
-        });
-    });
+    return currentPoetObject.individualData.flatMap(currentPoetData => 
+        currentPoetData.lines.flatMap(line =>  
+            line.toLowerCase().split(" ").flatMap(word => 
+                word.match(/[a-z'’]+/g)
+            )
+        )
+    );
 }
+
 //processData
 // Helper function for processAllData.
 // Returns a clean array of words with extraneous nulls removed.
@@ -123,6 +126,7 @@ function getAggregateArrayOfWords(allData) {
     // Regardless, this extra step removes them and ensures we have an array of only words. 
     return words.filter(word => word !== null); 
 } 
+
 //processData
 // Helper function for getIndividualArraysOfWords.
 // Saving new object that relates poet to their list of words.
@@ -134,6 +138,7 @@ function makeSeparateWordsObject(currentPoetObject) {
         justWords: flattenToWordsOnly(currentPoetObject)
     };
 }
+
 //processData
 // Helper function for processAllData.
 // Produces an array of objects that relate a poet to their words.
@@ -270,8 +275,8 @@ function createIndividualComparisonCharts(individualPoetWordFrequency) {
         ${createViewDataChartsPoemsButtons("js-individualTable-button", "View data table")}
         ${createViewDataChartsPoemsButtons("js-poems-button", "View poems")}
         `);
-    console.log("individualPoetWordFrequency", individualPoetWordFrequency);
-    // { Shakespeare: {word1: 1, word2: 15}, "Emily Dickinson": {word1: 15, word2: 25}, ...}
+
+        // { Shakespeare: {word1: 1, word2: 15}, "Emily Dickinson": {word1: 15, word2: 25}, ...}
     // Get poet names in an array for later iteration. 
     const poetNamesArray = Object.keys(individualPoetWordFrequency);
 
@@ -289,30 +294,11 @@ function createIndividualComparisonCharts(individualPoetWordFrequency) {
             };
         });
 
-
         // Create a highchart for each poet.
         createHighChartWordChart(individualPoetData, poet, poet);
-       /*  Highcharts.chart(poet, {
-            series: [{
-                type: 'wordcloud',
-                data: individualPoetData,
-                name: 'Occurrences'
-            }],
-            plotOptions: {
-                series: {
-                    minFontSize: 5,
-                    maxFontSize: 55
-                }
-            },
-            title: {
-                text: "Top 100 Words for " + poet
-            },
-            credits: {
-                enabled: false
-            }
-        }); */
     })
 }
+
 //createString
 // Creates a chart for either a single poet or multiple poets in aggregate. 
 function createAggregateComparisonChart(aggregateWordFrequencyAnalysis, poetNameString) {
@@ -335,25 +321,6 @@ function createAggregateComparisonChart(aggregateWordFrequencyAnalysis, poetName
     
     // Create and render highchart for single poet or multipe poets combined.
     return createHighChartWordChart(aggregatePoetData, "aggregateChart", poetNameString);
-    /* return Highcharts.chart("aggregateChart", {
-        series: [{
-            type: 'wordcloud',
-            data: aggregatePoetData,
-            name: 'Occurrences'
-        }],
-        plotOptions: {
-            series: {
-                minFontSize: 5,
-                maxFontSize: 55
-            }
-        },
-        title: {
-            text: "Top 100 Words for " + poetNameString
-        },
-        credits: {
-            enabled: false
-        }
-    }); */
 }
 
 //createString
