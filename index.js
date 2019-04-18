@@ -1,5 +1,7 @@
 'use strict';
 
+//processdata
+// poetList = {authors: ["Adam Lindsay Gordon","Alan Seeger"...]}
 function getPoetList() {
 
     fetch("http://poetrydb.org/authors")
@@ -15,17 +17,19 @@ function getPoetList() {
     })
 }
 
-// poetList = {authors: ["Adam Lindsay Gordon","Alan Seeger"...]}
+//createString
 function createPoetsListString(responseJSON) {
     return responseJSON.authors.map(poet => `<option class="poet-options">${poet}</option>`).join('\n'); 
 }
 
-// When a user's search returns an erro because the poet was not found. This function
+//display
+// When a user's search returns an error because the poet was not found. This function
 // calls the PoetryDB, gets, and displays a full list of poets actually in the database. 
 function displayPoetsList(responseJSON) {
     $("#poet-list").html(createPoetsListString(responseJSON));
 } 
 
+//display
 // Attribution: https://hackernoon.com/copying-text-to-clipboard-with-javascript-df4d4988697f
 function enableCopySelectedPoetFromList() {
     $("#poet-list").change(function() {
@@ -39,19 +43,20 @@ function enableCopySelectedPoetFromList() {
     });
 }
 
-
+//display
 // Helper function for toggleCollapsibleMenus.
 function togglePredefinedSearchesVisibility() {
     $(".js-predefined-searches-list").toggleClass("hidden");
     $(".js-predefined-searches").toggleClass("searches-collapsible searches-active");
 }
 
+//display
 // Helper function for toggleCollapsibleMenus.
 function togglePoetSearchVisbility() {
     $(".js-poet-search-form").toggleClass("hidden");
     $(".js-poet-search").toggleClass("searches-collapsible searches-active");
 }
-
+//display
 // Opens/closes 'Search poets' and 'Predefined searches' on mobile/smaller screens.
 // May not be necessary for larger screens.
 function toggleCollapsibleMenus() { 
@@ -77,7 +82,7 @@ function toggleCollapsibleMenus() {
     $("#checkbox").addClass("hidden");
 } */
 
-
+//processData
 // Helper function for getAllPoetData.
 function makePoetDataObject(results) {
     return {
@@ -85,12 +90,12 @@ function makePoetDataObject(results) {
         individualData: results
     };
 }
-
+//createString
 // Helper function for onPoetsEntered.
 function constructPoetryDBUrl(poet) {
     return `http://poetrydb.org/author/${poet}`;
 }
-
+//processData
 // Helper function for getAggregateArrayOfWords and makeSeparateWordsObject.
 // Returns a flattened array of words in lowercase, without punctuation.
 function flattenToWordsOnly(currentPoetObject) {
@@ -102,7 +107,7 @@ function flattenToWordsOnly(currentPoetObject) {
         });
     });
 }
-
+//processData
 // Helper function for processAllData.
 // Returns a clean array of words with extraneous nulls removed.
 function getAggregateArrayOfWords(allData) {
@@ -118,7 +123,7 @@ function getAggregateArrayOfWords(allData) {
     // Regardless, this extra step removes them and ensures we have an array of only words. 
     return words.filter(word => word !== null); 
 } 
-
+//processData
 // Helper function for getIndividualArraysOfWords.
 // Saving new object that relates poet to their list of words.
 // This is so I can identify the words by poet name (which is 
@@ -129,7 +134,7 @@ function makeSeparateWordsObject(currentPoetObject) {
         justWords: flattenToWordsOnly(currentPoetObject)
     };
 }
-
+//processData
 // Helper function for processAllData.
 // Produces an array of objects that relate a poet to their words.
 function getIndividualArraysOfWords(allData) {
@@ -141,9 +146,8 @@ function getIndividualArraysOfWords(allData) {
     })
 
     return separateWords;
-
 }
-
+//processData
 // Helper function for getIndividualWordFrequencyAnalysis and 
 // to get the AggregateWordFrequencyAnalysis.
 // Filters out common words like "a", "the", "and" from the Object. 
@@ -188,7 +192,7 @@ function filterAndRestrictWordFrequency(wordFrequency) {
         return first100;
     }, {});
 }
-
+//processData
 // Helper function for getIndividualWordFrequencyAnalysis and 
 // getAggregateWordFrequencyAnalysis.
 // Reduces an array to an object of word frequencies.
@@ -204,7 +208,7 @@ function reduceWordArrayToWordFrequency(wordArray) {
             return wordFrequencyAccumulator;
         }, {});
 }
-
+//processData
 // Produces a word frequency object for each individual poet.
 // { Shakespeare: {word1: 1, word2: 15}, "Emily Dickinson": {word1: 15, word2: 25}, ...}
 function getIndividualWordFrequencyAnalysis(individualWordArrayOfObjects) {
@@ -218,14 +222,43 @@ function getIndividualWordFrequencyAnalysis(individualWordArrayOfObjects) {
 
     return individualPoetWordFrequency;
 }
-
+//createString
 // Helper function for createIndividualComparisonCharts.
 // Create divs for each poet. Charts will be rendered to these divs.
 function createPoetDivs(poetNamesArray) {
     poetNamesArray.forEach(poet => $(".individual").append(
         `<div class="charts-style" id="${poet}"></div`));
 }
+//createString
+function createViewDataChartsPoemsButtons(id, text) {
+    return `<button type="button" class="table-poem-button-styles" id="${id}">${text}</button>`;
+}
 
+//createString
+function createHighChartWordChart(...args) {
+    Highcharts.chart(args[1], {
+        series: [{
+            type: 'wordcloud',
+            data: args[0],
+            name: 'Occurrences'
+        }],
+        plotOptions: {
+            series: {
+                minFontSize: 5,
+                maxFontSize: 55
+            }
+        },
+        title: {
+            text: "Top 100 Words for " + args[2]
+        },
+        credits: {
+            enabled: false
+        }
+    });
+}
+
+
+//display
 // Creates highcharts for each poet when multiple poets are compared.
 function createIndividualComparisonCharts(individualPoetWordFrequency) {
 
@@ -234,9 +267,10 @@ function createIndividualComparisonCharts(individualPoetWordFrequency) {
 
     // Add buttons to view data poems.
     $(".individual").prepend(`
-        <button type="button" class="table-poem-button-styles" id="js-individualTable-button">View data table</button>
-        <button type="button" class="table-poem-button-styles" id="js-poems-button">View poems</button>`);
-
+        ${createViewDataChartsPoemsButtons("js-individualTable-button", "View data table")}
+        ${createViewDataChartsPoemsButtons("js-poems-button", "View poems")}
+        `);
+    console.log("individualPoetWordFrequency", individualPoetWordFrequency);
     // { Shakespeare: {word1: 1, word2: 15}, "Emily Dickinson": {word1: 15, word2: 25}, ...}
     // Get poet names in an array for later iteration. 
     const poetNamesArray = Object.keys(individualPoetWordFrequency);
@@ -257,7 +291,8 @@ function createIndividualComparisonCharts(individualPoetWordFrequency) {
 
 
         // Create a highchart for each poet.
-        Highcharts.chart(poet, {
+        createHighChartWordChart(individualPoetData, poet, poet);
+       /*  Highcharts.chart(poet, {
             series: [{
                 type: 'wordcloud',
                 data: individualPoetData,
@@ -275,10 +310,10 @@ function createIndividualComparisonCharts(individualPoetWordFrequency) {
             credits: {
                 enabled: false
             }
-        });
+        }); */
     })
 }
-
+//createString
 // Creates a chart for either a single poet or multiple poets in aggregate. 
 function createAggregateComparisonChart(aggregateWordFrequencyAnalysis, poetNameString) {
     
@@ -294,12 +329,13 @@ function createAggregateComparisonChart(aggregateWordFrequencyAnalysis, poetName
 
     // Add view data and view poems buttons; create div to hold chart. 
     $(".singleAggregate").append(`
-        <button type="button" class="table-poem-button-styles" id="js-table-button">View data table</button>
-        <button type="button" class="table-poem-button-styles" id="js-poems-button">View poems</button>
+        ${createViewDataChartsPoemsButtons("js-table-button", "View data table")}
+        ${createViewDataChartsPoemsButtons("js-poems-button", "View poems")}
         <div class="charts-style" id="aggregateChart"></div>`);
     
     // Create and render highchart for single poet or multipe poets combined.
-    return Highcharts.chart("aggregateChart", {
+    return createHighChartWordChart(aggregatePoetData, "aggregateChart", poetNameString);
+    /* return Highcharts.chart("aggregateChart", {
         series: [{
             type: 'wordcloud',
             data: aggregatePoetData,
@@ -317,16 +353,16 @@ function createAggregateComparisonChart(aggregateWordFrequencyAnalysis, poetName
         credits: {
             enabled: false
         }
-    });
+    }); */
 }
 
-
+//createString
 // Helper function for processAllData.
 // Creates a string of poet names for use in chart and other titles. 
 function createPoetNameString(allData) { 
     return allData.map(currentPoet => currentPoet.name).join(", ");
 }
-
+//display
 // Helper function for processAllData.
 // Makes the results and error sections visible.
 function displayResults() {
@@ -335,23 +371,29 @@ function displayResults() {
     $(".js-poet-list").addClass("hidden");
 }
 
-// Create data tables for each poet when multiple poets are compared. 
-function createIndividualDataTable(individualPoetWordFrequency) {
-
-    // Reduce word frequency object to get sum of occurences to calculate percentage below.
-    // From this: { Shakespeare: {word1: 1, word2: 15}, "Emily Dickinson": {word1: 15, word2: 25}, ...}
-    // To this: {Shakespear: 345, Emily: 3321, ...}
-    const occurencesTotalByPoet = Object.keys(individualPoetWordFrequency).reduce((poetAccumulator, currentPoet) => {
+//processData
+// Reduce word frequency object to get sum of occurences to calculate percentage below.
+// From this: { Shakespeare: {word1: 1, word2: 15}, "Emily Dickinson": {word1: 15, word2: 25}, ...}
+// To this: {Shakespear: 345, Emily: 3321, ...}
+function getIndividualSumOfWordOccurences(individualPoetWordFrequency) {
+    return Object.keys(individualPoetWordFrequency).reduce((poetAccumulator, currentPoet) => {
         poetAccumulator[currentPoet] = Object.keys(individualPoetWordFrequency[currentPoet]).reduce((total, currentVal) => {
             return total += individualPoetWordFrequency[currentPoet][currentVal]}, 0);
         return poetAccumulator;
-    }, {});    
+    }, {}); 
+}
+
+//createString
+// Create data tables for each poet when multiple poets are compared. 
+function createIndividualDataTable(individualPoetWordFrequency) {
+
+    const occurencesTotalByPoet = getIndividualSumOfWordOccurences(individualPoetWordFrequency);
 
     // Create view charts and view poems buttons and create beginning of table.
     let tableString = `
-        <button type="button" class="table-poem-button-styles" id="js-individualCharts-button">View charts</button>
-        <button type="button" class="table-poem-button-styles" id="js-poems-button">View poems</button>
-        
+        ${createViewDataChartsPoemsButtons("js-individualCharts-button", "View charts")}
+        ${createViewDataChartsPoemsButtons("js-poems-button", "View poems")}
+                
         <table>
         <caption>Data for: ${Object.keys(individualPoetWordFrequency).join(", ")}</caption>
 
@@ -386,24 +428,35 @@ function createIndividualDataTable(individualPoetWordFrequency) {
     return tableString;
 }
 
+//display
 // Listen for View Data Table clicks and show data table for multiple poets compared.
 function handleViewIndividualDataTableClicked(individualPoetWordFrequency) {
+    $(".js-results").off("click", "#js-individualTable-button");
     $(".js-results").on("click", "#js-individualTable-button", function(event) {
         $(".individual").html(createIndividualDataTable(individualPoetWordFrequency));
     })
 }
 
+//createString
+function getAggregateSumOfWordOccurences(aggregateWordFrequencyAnalysis) {
+    return Object.keys(aggregateWordFrequencyAnalysis).reduce((total, currentVal) => 
+        total += aggregateWordFrequencyAnalysis[currentVal], 0);
+}
+
+//createString
 // Create data table for single poet or multiple poets in aggregate. 
 function createAggregateDataTable(aggregateWordFrequencyAnalysis, poetNameString) {
 
     // Reduce word frequency object to get sum of occurences to calculate percentage below.
-    const occurencesTotal = Object.keys(aggregateWordFrequencyAnalysis).reduce((total, currentVal) => {
-        return total += aggregateWordFrequencyAnalysis[currentVal]}, 0);
+    /* const occurencesTotal = Object.keys(aggregateWordFrequencyAnalysis).reduce((total, currentVal) => {
+        return total += aggregateWordFrequencyAnalysis[currentVal]}, 0); */
+
+    const occurencesTotal = getAggregateSumOfWordOccurences(aggregateWordFrequencyAnalysis);
     
     // Create view charts and view poems buttons and create beginning of table.
     let tableString = `
-        <button type="button" class="table-poem-button-styles" id="js-charts-button">View chart</button>
-        <button type="button" class="table-poem-button-styles" id="js-poems-button">View poems</button>
+        ${createViewDataChartsPoemsButtons("js-charts-button", "View chart")}
+        ${createViewDataChartsPoemsButtons("js-poems-button", "View poems")}
         
         <table>
         <caption>Data for: ${poetNameString}</caption>
@@ -436,43 +489,54 @@ function createAggregateDataTable(aggregateWordFrequencyAnalysis, poetNameString
     return tableString; 
 }
 
+//display
 // List for View Data Table click and show data table for single or multiple poets in aggregate. 
 function handleViewAggregateDataTableClicked(aggregateWordFrequencyAnalysis, poetNames) {
+    $(".js-results").off("click", "#js-table-button");
     $(".js-results").on("click", "#js-table-button", function(event) {
         $(".singleAggregate").html(createAggregateDataTable(aggregateWordFrequencyAnalysis, poetNames));
     })
 }
 
+//display
 // Listen for View All Data click and show data for aggregate and individual poet tables.
 function handleViewAllTablesClicked(individualPoetWordFrequency, aggregateWordFrequencyAnalysis, poetNames) {
+    $(".js-results").off("click", "#js-allTables-button");
     $(".js-results").on("click", "#js-allTables-button", function(event) {
         $(".singleAggregate").html(createAggregateDataTable(aggregateWordFrequencyAnalysis, poetNames));
         $(".individual").html(createIndividualDataTable(individualPoetWordFrequency));
     });
 }
 
+//display
 // Listen for View Charts click and show individual charts for multiple poets compared. 
 function handleViewIndividualChartsClicked(individualPoetWordFrequency) {
+    $(".js-results").off("click", "#js-individualCharts-button");
     $(".js-results").on("click", "#js-individualCharts-button", function(event) {
         createIndividualComparisonCharts(individualPoetWordFrequency);
     })
 }
 
+//display
 // Listen for View Chart click and show chart for single poet or multiple poets in aggregate.
 function handleViewAggregateChartsClicked(aggregateWordFrequencyAnalysis, poetNames) {
+    $(".js-results").off("click", "#js-charts-button");
     $(".js-results").on("click", "#js-charts-button", function(event) {        
         createAggregateComparisonChart(aggregateWordFrequencyAnalysis, poetNames);
     })
 }
 
+//display
 // Listen for View Charts click and show charts for individual poets.
 function handleViewAllChartsClicked(individualPoetWordFrequency, aggregateWordFrequencyAnalysis, poetNames) {
+    $(".js-results").off("click", "#js-allCharts-button");
     $(".js-results").on("click", "#js-allCharts-button", function(event) {
         createAggregateComparisonChart(aggregateWordFrequencyAnalysis, poetNames);
         createIndividualComparisonCharts(individualPoetWordFrequency);
     });
 }
 
+//createString
 // Helper object for poem viewer screen.
 // Create global object to track poem count.
 const poemCountTracking = {
@@ -498,6 +562,7 @@ const poemCountTracking = {
     }
 };
 
+//processData
 // Helper function for createPoemsArray.
 // Create a poem object to use in rendering each poem to the
 // poem viewer screen.
@@ -510,6 +575,7 @@ function createPoemViewerPoemObject(currentPoemObject, index) {
     };
 }
 
+//processData
 // Helper function for processAllData to view poems.
 // Creates an array of poem objects for us in rendering 
 // poems to the poem viewer screen.
@@ -525,6 +591,7 @@ function createPoemsArray(allData) {
     return aggregatePoems;
 }
 
+//createString
 // Helper function for createPoemViewer.
 // Gets a specific poem object (i.e. poem) from the array of poems to 
 // render in the poem viewer screen.
@@ -532,6 +599,7 @@ function getPoemObject(poemsArray, count) {
     return poemsArray.find(poem => poem.poemNumber === count);
 }
 
+//createString
 // Helper function for createPoemViewer.
 // Creates the prev, next and current count navigation for the poem viewer screen.
 function createPoemViewerMenu(count, length) {
@@ -562,6 +630,7 @@ function createPoemViewerMenu(count, length) {
         </ul>`
 }
 
+//createString
 // Helper function for createPoemString. Processes lines into <p> elements.
 // Tries to account for indentation and line breaks to mirror the poem's
 // original layout.
@@ -578,6 +647,7 @@ function createPoemLinesString(linesArray) {
     return poemLines.join("\n");
 }
 
+//createString
 // Helper function for createPoemViewer.
 // Creates the title, author, and lines elements to render the poem 
 // to the poem viewer screen.
@@ -588,6 +658,7 @@ function createPoemString(poemObject) {
         <div class="full-poem-styles">${createPoemLinesString(poemObject.lines)}</div>`
 }
 
+//createString
 // Helper function for handleViewPoemsClicked. Same function works for
 // individual poets compared search and single/aggregate poet search. 
 function createPoemViewer(poemsArray, compare) {
@@ -598,13 +669,13 @@ function createPoemViewer(poemsArray, compare) {
     // shown for individual poets and all poets combined when multiple poets were compared. 
     if (compare) {
         poemViewerString = `
-            <button type="button" class="table-poem-button-styles" id="js-allCharts-button">View all charts</button>
-            <button type="button" class="table-poem-button-styles" id="js-allTables-button">View all data tables</button>
+            ${createViewDataChartsPoemsButtons("js-allCharts-button", "View all charts")}
+            ${createViewDataChartsPoemsButtons("js-allTables-button", "View all data tables")}    
             `
     } else {
         poemViewerString = `
-            <button type="button" class="table-poem-button-styles" id="js-charts-button">View chart</button>
-            <button type="button" class="table-poem-button-styles" id="js-table-button">View data table</button>
+            ${createViewDataChartsPoemsButtons("js-charts-button", "View chart")}
+            ${createViewDataChartsPoemsButtons("js-table-button", "View data table")}
             `
     }
     
@@ -619,6 +690,7 @@ function createPoemViewer(poemsArray, compare) {
     return poemViewerString;
 }
 
+//display
 // This function can be used for both individual comparison and single/aggregate searches. 
 // We will only show one poem viewer for all poets and poems. 
 // Listen for View Poems click and show poem viewer.
@@ -630,7 +702,7 @@ function handleViewPoemsClicked(poemsArray, compare) {
     })
 }
 
-
+//display
 // Listen for Next poem click and show next poem in poems array.
 function handleNextPoemClicked(poemsArray, compare) {
     // Need to unbind previous click events before adding a new one. This 
@@ -643,6 +715,7 @@ function handleNextPoemClicked(poemsArray, compare) {
     })
 }
 
+//display
 // Listen for previous poem click and show previous poem in poems array.
 function handlePreviousPoemClicked(poemsArray, compare) {
     // Need to unbind previous click events before adding a new one. This 
@@ -655,6 +728,7 @@ function handlePreviousPoemClicked(poemsArray, compare) {
     })
 }
 
+//processData
 // Processes all data to create charts, data tables, and poems for the poem viewer.
 // Initiates listeners for View Data, View Poems, and View Charts buttons.
 function processAllData(allData, compare) {
@@ -731,6 +805,7 @@ function processAllData(allData, compare) {
     handlePreviousPoemClicked(poemsArray, compare);
 } 
 
+//processData
 // Helper function for getAllPoetData.
 function handleResponseErrors(response) {
     if (!response.ok) {
@@ -739,6 +814,7 @@ function handleResponseErrors(response) {
     return response.json();  
 }
 
+//processData
 // Uses Promises.all() to wait for all fetch calls to resolve, then processes
 // responses into a data structure. 
 // Attribution: http://tinyurl.com/y5vm3eu8
@@ -783,6 +859,7 @@ function getAllPoetData(allURLS, compare) {
         }) 
 }
 
+//processData
 // Listen for when a user selects a predefined search and call getAllPoetData.
 function onPredefinedSearchSelected() {
 
@@ -795,8 +872,6 @@ function onPredefinedSearchSelected() {
 
         const poets = $("#predefined-searches").val().split(", ");
         
-        // if (poets === ["Jupiter Hammon"] || poets === ["Edgar Allan Poe"]) {
-
         if (poets.includes("Jupiter Hammon")|| poets.includes("Edgar Allan Poe")) {
             const allURLs = poets.map(constructPoetryDBUrl);
             getAllPoetData(allURLs, false);
@@ -810,6 +885,7 @@ function onPredefinedSearchSelected() {
     });
 }  
 
+//processData
 // Listen for when a user enters a search and call getAllPoetData.
 function onPoetsEntered() {
     
@@ -846,6 +922,7 @@ function onPoetsEntered() {
     });
 }
 
+//processData
 function runApp() {
     enableCopySelectedPoetFromList();
     getPoetList();
@@ -854,4 +931,5 @@ function runApp() {
     onPredefinedSearchSelected();
 }
 
+//processData
 $(runApp);
