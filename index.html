@@ -41,57 +41,60 @@
                 or choose one of the predefined searches. Results will be displayed in a 
                 word chart. You can also view the data or the poems used in the analysis.  
             </p>
-                             
-            <section class="search-poets-styles">
-                
-                <button type="button" class="searches-collapsible js-poet-search">Search poets:</button>
+            
+            <div class="search-predefined-large-screen-layout">
 
-                <form role="form" class="collapsible-content hidden js-poet-search-form">
+                <section class="search-poets-styles">
                     
-                    <!-- Multiple poets can only be separated by commas, no spaces allowed. 
-                        Hence the regex pattern: \S+ (meaning, no spaces, 1 or more times)-->
-                    <label class="input-styles" for="poets">Enter poet (or poets separated by commas):
-                        <input type="text" id="poets" name="poets" required placeholder="Shakespeare, Emily Dickinson">
-                    </label>
+                    <button type="button" class="searches-collapsible js-poet-search">Search poets:</button>
 
-                    <!-- If compare is checked, then the value 'yes' will be passed on submit. -->
-                    <label id="checkbox" for="compare-poets">
-                    <!-- <label class="hidden" id="checkbox" for="compare-poets"> May need if I 
-                        decide to make the checkbox conditional.-->
-                        <input type="checkbox" id="compare-poets" name="compare-poets" value="yes">
-                        See comparison charts for multiple poets
-                    </label>
-
-                    <button class="input-button-styles" type="submit">Find poets</button>
-
-                </form>
-
-            </section>
-
-            <section class="predefined-search-style js-predefined-search">
-                
-                <!-- Collapsible based on: https://www.w3schools.com/howto/howto_js_collapsible.asp -->
-                <button type="button" class="searches-collapsible js-predefined-searches">Predefined searches:</button>
-                <form role="form" class="collapsible-content hidden js-predefined-searches-list">
+                    <form role="form" class="collapsible-content hidden js-poet-search-form">
                         
-                        <label for="predefined-searches">Please select a poet or poets:</label>
-                        <select class="predefined-select-box-styles" id="predefined-searches">
-                            <optgroup label="Individual poets">
-                                <option value="Jupiter Hammon">Jupiter Hammon</option>
-                                <option value="Edgar Allan Poe">Edgar Allan Poe</option>
-                            </optgroup>
-                            <optgroup label="Poets compared">
-                                <option value="William Shakespeare, Emily Dickinson">Shakespeare to Emily Dickinson</option>
-                                <option value="Katherine Philips, Walt Whitman">Katherine Philips to Walt Whitman</option>
-                            </optgroup>
-                        </select>
-                       
-                        <button class="input-button-styles" type="submit">Get results</button>
+                        <!-- Multiple poets can only be separated by commas, no spaces allowed. 
+                            Hence the regex pattern: \S+ (meaning, no spaces, 1 or more times)-->
+                        <label class="input-styles" for="poets">Enter poet (or poets separated by commas):
+                            <input type="text" id="poets" name="poets" required placeholder="Shakespeare, Emily Dickinson">
+                        </label>
 
-                </form>
+                        <!-- If compare is checked, then the value 'yes' will be passed on submit. -->
+                        <label id="checkbox" for="compare-poets">
+                        <!-- <label class="hidden" id="checkbox" for="compare-poets"> May need if I 
+                            decide to make the checkbox conditional.-->
+                            <input type="checkbox" id="compare-poets" name="compare-poets" value="yes">
+                            See comparison charts for multiple poets
+                        </label>
 
-            </section>
+                        <button class="input-button-styles" type="submit">Find poets</button>
 
+                    </form>
+
+                </section>
+
+                <section class="predefined-search-style js-predefined-search">
+                    
+                    <!-- Collapsible based on: https://www.w3schools.com/howto/howto_js_collapsible.asp -->
+                    <button type="button" class="searches-collapsible js-predefined-searches">Predefined searches:</button>
+                    <form role="form" class="collapsible-content hidden js-predefined-searches-list">
+                            
+                            <label for="predefined-searches">Please select a poet or poets:</label>
+                            <select class="predefined-select-box-styles" id="predefined-searches">
+                                <optgroup label="Individual poets">
+                                    <option value="Jupiter Hammon">Jupiter Hammon</option>
+                                    <option value="Edgar Allan Poe">Edgar Allan Poe</option>
+                                </optgroup>
+                                <optgroup label="Poets compared">
+                                    <option value="William Shakespeare, Emily Dickinson">Shakespeare to Emily Dickinson</option>
+                                    <option value="Katherine Philips, Walt Whitman">Katherine Philips to Walt Whitman</option>
+                                </optgroup>
+                            </select>
+                        
+                            <button class="input-button-styles" type="submit">Get results</button>
+
+                    </form>
+
+                </section>
+            </div>
+            
             <section class="error-styles js-error hidden"></section>
 
             <section class="poet-list-styles js-poet-list hidden">

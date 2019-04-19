@@ -17,7 +17,7 @@ function createGettingPoetDataString() {
 // Create divs for each poet. Charts will be rendered to these divs.
 function createPoetDivs(poetNamesArray) {
     poetNamesArray.forEach(poet => $(".individual").append(
-        `<div class="charts-style" id="${poet}"></div`));
+        `<div class="charts-style individual-charts-large-screen-styles" id="${poet}"></div`));
 }
 
 function createViewDataChartsPoemsButtons(id, text) {
