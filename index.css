@@ -13,8 +13,20 @@ html {
 body {
     width: 100%;
     max-width: 1000px;
-    margin: 2% 5%;
+    margin: 0;
+    padding: 0;
 }
+
+header, main, footer {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* .singleAggregate {
+    width: 100%;
+} */
+
 h1 {
     margin-bottom: 2px;
 }
@@ -31,6 +43,14 @@ h2 {
     margin: 20px 0;
 }
 
+.input-button-styles {
+    background-color: gray;
+    color: white;
+    width: 300px;
+    padding: 10px 0;
+    margin: 20px 0;
+}
+
 #poets {
     width: 300px;
     padding: 10px 5px;
@@ -40,19 +60,28 @@ h2 {
 .instructions {
     width: 90%;
     max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 button {
     cursor: pointer;
 }
 
+.predefined-select-box-styles {
+    margin: 10px 0;
+    width: 300px;
+}
+
+
+
 .searches-collapsible, .searches-active {
     background-color: gray;
     color: white;
     cursor: pointer;
     padding: 15px;
-    width: 90%;
-    max-width: 400px;
+    width: 100%;
+    /* max-width: 400px; */
     border: none;
     text-align: left;
     outline: none;
@@ -102,43 +131,163 @@ ul {
     font-weight: normal;
 }
 
+.error-styles {
+    padding: 20px 10px 5px 10px;
+}
+
+.poet-list-styles {
+    padding: 0 10px;
+}
+
+#poet-list {
+    margin-top: 10px;
+}
+
+.getting-data-styles {
+    font-weight: bold;
+    color: red;
+    margin: 30px;
+}
+
 
 /* HighCharts styles */
 .charts-style {
     width: 100%;
     min-width: 300px;
     max-width: 800px;
-    margin: 20; 
+    margin: 0 0 30px 0; 
+    border: 1px solid gray;
 }
 
 .line-indented {
     padding-left: 25px;
 }
 
-.poem-viewer-menu-styles {
+.poem-viewer-menu-styles, .button-container-style {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
 }
 
+.poem-viewer-menu-styles li {
+    width: 33.3%;
+}  
+
+.next-li {
+    text-align: right;
+}
+
+.previous-style {
+    text-align: left;
+}
+.current-poem {
+    text-align: center; 
+}
+
+.poem-viewer-menu-styles {
+    margin-bottom: 40px;
+    padding: 0 10px; 
+}
+
+.full-poem-styles {
+    margin: 40px 0;
+    padding: 0 10px;
+}
+
+/* .singleAggregate {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+    /* grid-auto-rows: minmax(50px, auto); 
+    align-items: start;
+    /* max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;   
+} */
+
+
+
+.table-poem-button-styles {
+    background-color: gray;
+    color: white;
+    width: 48%;
+    padding: 10px 0;
+    margin: 30px 0;
+}
+
 .poem-title-styles {
     font-weight: bold;
+    margin-top: 10px;
+    padding: 0 10px;
 }
 
 .poem-author-styles {
     font-style: italic;
+    padding: 0 10px;
 }
 
 .previous-next-styles {
     background: none;
     border: none;
     text-decoration: underline;
+    padding: 0px;
 }
 
 .inactive-button {
     cursor: default;
     text-decoration: none;
+}
+
+table {
+    width: 100%;
+    padding: 0 10px;
+}
+
+th, td {
+    padding: 10px 10px;
+   /*  min-width: 20px; */
+   width: 33.3%;
+}
+
+.individual-poet-column-styles {
+    width: 25%;
+}
+
+caption {
+    margin: 30px 0;
+}
+
+.text-column-styles {
+    text-align: left;
+}
+
+.number-column-styles {
+    text-align: center;
+}
+
+/* Alternate row styling
+Attribution: https://www.w3.org/Style/Examples/007/evenodd.en.html */
+tr:nth-child(even) {
+    background: white;
+}
+
+tr:nth-child(odd) {
+    background: gray;
+}
+
+th {
+    background: white;
+}
+
+.footer {
+    margin-top: 25%;
+    text-align: center;
+}
+
+.footer address {
+    font-style: normal;
+
 }
 
 

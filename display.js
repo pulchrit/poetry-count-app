@@ -35,7 +35,7 @@ function toggleCollapsibleMenus() {
     $(".js-poet-search-form").submit(togglePoetSearchVisbility);
 }
 
-// Creates highcharts for each poet when multiple poets are compared.
+/* // Creates highcharts for each poet when multiple poets are compared.
 function createIndividualComparisonCharts(individualPoetWordFrequency) {
 
     // Clear out any previous results.
@@ -43,9 +43,10 @@ function createIndividualComparisonCharts(individualPoetWordFrequency) {
 
     // Add buttons to view data poems.
     $(".individual").prepend(`
-        ${createViewDataChartsPoemsButtons("js-individualTable-button", "View data table")}
-        ${createViewDataChartsPoemsButtons("js-poems-button", "View poems")}
-        `);
+        <div class="button-container-style">
+            ${createViewDataChartsPoemsButtons("js-individualTable-button", "View data table")}
+            ${createViewDataChartsPoemsButtons("js-poems-button", "View poems")}
+        </div>`);
 
         // { Shakespeare: {word1: 1, word2: 15}, "Emily Dickinson": {word1: 15, word2: 25}, ...}
     // Get poet names in an array for later iteration. 
@@ -68,7 +69,7 @@ function createIndividualComparisonCharts(individualPoetWordFrequency) {
         // Create a highchart for each poet.
         createHighChartWordChart(individualPoetData, poet, poet);
     })
-}
+} */
 
 // Helper function for processAllData.
 // Makes the results and error sections visible.
@@ -76,6 +77,7 @@ function displayResults() {
     $(".js-results").removeClass("hidden");
     $(".js-error").addClass("hidden");
     $(".js-poet-list").addClass("hidden");
+    /* $(".instructions").addClass("hidden"); */
 }
 
 // Listen for View Data Table clicks and show data table for multiple poets compared.

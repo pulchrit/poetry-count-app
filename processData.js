@@ -323,9 +323,11 @@ function onPredefinedSearchSelected() {
     $(".js-predefined-searches-list").submit(event => {
         event.preventDefault();
 
-        // Remove any previous results.
-        $(".singleAggregate").html("");
+        // Notify user the program is running, remove any previous results, hide instructions.
+        $(".js-results").removeClass("hidden");
+        $(".singleAggregate").html(createGettingPoetDataString());
         $(".individual").html("");
+        $(".instructions").addClass("hidden");
 
         const poets = $("#predefined-searches").val().split(", ");
         
@@ -348,9 +350,11 @@ function onPoetsEntered() {
     $(".js-poet-search-form").submit(event => {
         event.preventDefault();
     
-        // Remove any previous results.
-        $(".singleAggregate").html("");
+        // Notify user the program is running, remove any previous results, hide instructions.
+        $(".js-results").removeClass("hidden");
+        $(".singleAggregate").html(createGettingPoetDataString());
         $(".individual").html("");
+        $(".instructions").addClass("hidden");
         
         // Get poet(s) entered and split into array
         // so that we can make individual calls to the

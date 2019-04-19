@@ -37,7 +37,7 @@
 
             <p class="instructions">
                 Interested in seeing a different view of word choices of your 
-                favorite poets? Enter the name(s) below to perform a word freqency analysis, 
+                favorite poets? Enter the name(s) below to perform a word frequency analysis, 
                 or choose one of the predefined searches. Results will be displayed in a 
                 word chart. You can also view the data or the poems used in the analysis.  
             </p>
@@ -62,7 +62,7 @@
                         See comparison charts for multiple poets
                     </label>
 
-                    <button class="input-styles" type="submit">Find poets</button>
+                    <button class="input-button-styles" type="submit">Find poets</button>
 
                 </form>
 
@@ -75,7 +75,7 @@
                 <form role="form" class="collapsible-content hidden js-predefined-searches-list">
                         
                         <label for="predefined-searches">Please select a poet or poets:</label>
-                        <select id="predefined-searches">
+                        <select class="predefined-select-box-styles" id="predefined-searches">
                             <optgroup label="Individual poets">
                                 <option value="Jupiter Hammon">Jupiter Hammon</option>
                                 <option value="Edgar Allan Poe">Edgar Allan Poe</option>
@@ -86,19 +86,20 @@
                             </optgroup>
                         </select>
                        
-                        <button class="input-styles" type="submit">Get results</button>
+                        <button class="input-button-styles" type="submit">Get results</button>
 
                 </form>
 
             </section>
 
-            <section class="js-error hidden"></section>
+            <section class="error-styles js-error hidden"></section>
 
-            <section class="js-poet-list hidden">
+            <section class="poet-list-styles js-poet-list hidden">
                 <label for="poet-list">
-                    Apologies, the PoetryDB is really quite small. Please see list of available poets. 
-                    Make a selection to copy the poet name and then paste it into the search box. 
+                    Apologies, the PoetryDB is really quite small. Choose a name from the drop-down below,
+                    and it will automatically be copied for you to paste it into the search box.  
                 </label>
+                <br>
                 <select id="poet-list"></select>
             </section>
 

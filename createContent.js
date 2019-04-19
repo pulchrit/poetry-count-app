@@ -9,6 +9,10 @@ function constructPoetryDBUrl(poet) {
     return `http://poetrydb.org/author/${poet}`;
 }
 
+function createGettingPoetDataString() {
+    return `<p class="getting-data-styles">Getting poet data...</p>`;
+}
+
 // Helper function for createIndividualComparisonCharts.
 // Create divs for each poet. Charts will be rendered to these divs.
 function createPoetDivs(poetNamesArray) {
@@ -42,6 +46,42 @@ function createHighChartWordChart(...args) {
     });
 }
 
+// Creates highcharts for each poet when multiple poets are compared.
+function createIndividualComparisonCharts(individualPoetWordFrequency) {
+
+    // Clear out any previous results.
+    $(".individual").html("");
+
+    // Add buttons to view data poems.
+    $(".individual").prepend(`
+        <div class="button-container-style">
+            ${createViewDataChartsPoemsButtons("js-individualTable-button", "View data table")}
+            ${createViewDataChartsPoemsButtons("js-poems-button", "View poems")}
+        </div>`);
+
+        // { Shakespeare: {word1: 1, word2: 15}, "Emily Dickinson": {word1: 15, word2: 25}, ...}
+    // Get poet names in an array for later iteration. 
+    const poetNamesArray = Object.keys(individualPoetWordFrequency);
+
+    // Create divs with ids equaling poet names.
+    createPoetDivs(poetNamesArray);
+
+    // Create data array and chart for each poet.    
+    Object.keys(individualPoetWordFrequency).forEach(poet => {
+
+        // Create the data for each poet. 
+        let individualPoetData = Object.keys(individualPoetWordFrequency[poet]).map(word => {
+            return {
+                name: word,
+                weight: individualPoetWordFrequency[poet][word]
+            };
+        });
+
+        // Create a highchart for each poet.
+        createHighChartWordChart(individualPoetData, poet, poet);
+    })
+}
+
 // Creates a chart for either a single poet or multiple poets in aggregate. 
 function createAggregateComparisonChart(aggregateWordFrequencyAnalysis, poetNameString) {
     
@@ -57,8 +97,10 @@ function createAggregateComparisonChart(aggregateWordFrequencyAnalysis, poetName
 
     // Add view data and view poems buttons; create div to hold chart. 
     $(".singleAggregate").append(`
-        ${createViewDataChartsPoemsButtons("js-table-button", "View data table")}
-        ${createViewDataChartsPoemsButtons("js-poems-button", "View poems")}
+        <div class="button-container-style">
+            ${createViewDataChartsPoemsButtons("js-table-button", "View data table")}
+            ${createViewDataChartsPoemsButtons("js-poems-button", "View poems")}
+        </div>
         <div class="charts-style" id="aggregateChart"></div>`);
     
     // Create and render highchart for single poet or multipe poets combined.
@@ -78,18 +120,19 @@ function createIndividualDataTable(individualPoetWordFrequency) {
 
     // Create view charts and view poems buttons and create beginning of table.
     let tableString = `
-        ${createViewDataChartsPoemsButtons("js-individualCharts-button", "View charts")}
-        ${createViewDataChartsPoemsButtons("js-poems-button", "View poems")}
-                
+        <div class="button-container-style">
+            ${createViewDataChartsPoemsButtons("js-individualCharts-button", "View charts")}
+            ${createViewDataChartsPoemsButtons("js-poems-button", "View poems")}
+        </div>       
         <table>
         <caption>Data for: ${Object.keys(individualPoetWordFrequency).join(", ")}</caption>
 
         <thead>
             <tr>
-                <th scope="col">Poet</th>
-                <th scope="col">Word</th>
-                <th scope="col">Occurences</th>
-                <th scope="col">% for Poet</th>
+                <th class="text-column-styles individual-poet-column-styles" scope="col">Poet</th>
+                <th class="text-column-styles individual-poet-column-styles" scope="col">Word</th>
+                <th class="number-column-styles individual-poet-column-styles" scope="col">Occurences</th>
+                <th class="number-column-styles individual-poet-column-styles" scope="col">% for Poet</th>
             </tr>
         </thead>
 
@@ -99,10 +142,10 @@ function createIndividualDataTable(individualPoetWordFrequency) {
     const tableRowsArray = Object.keys(individualPoetWordFrequency).map(poet => {
         return Object.keys(individualPoetWordFrequency[poet]).map(word => {
             return `<tr>
-                        <td>${poet}</td>
-                        <td>${word}</td>
-                        <td>${individualPoetWordFrequency[poet][word]}</td>
-                        <td>${((individualPoetWordFrequency[poet][word]/occurencesTotalByPoet[poet])*100).toFixed(1)}%</td>
+                        <td class="text-column-styles individual-poet-column-styles">${poet}</td>
+                        <td class="text-column-styles individual-poet-column-styles">${word}</td>
+                        <td class="number-column-styles individual-poet-column-styles">${individualPoetWordFrequency[poet][word]}</td>
+                        <td class="number-column-styles individual-poet-column-styles">${((individualPoetWordFrequency[poet][word]/occurencesTotalByPoet[poet])*100).toFixed(1)}%</td>
                     </tr>`;
         }).join("\n");
     });
@@ -131,17 +174,18 @@ function createAggregateDataTable(aggregateWordFrequencyAnalysis, poetNameString
     
     // Create view charts and view poems buttons and create beginning of table.
     let tableString = `
-        ${createViewDataChartsPoemsButtons("js-charts-button", "View chart")}
-        ${createViewDataChartsPoemsButtons("js-poems-button", "View poems")}
-        
+        <div class="button-container-style">
+            ${createViewDataChartsPoemsButtons("js-charts-button", "View chart")}
+            ${createViewDataChartsPoemsButtons("js-poems-button", "View poems")}
+        </div>
         <table>
         <caption>Data for: ${poetNameString}</caption>
 
         <thead>
             <tr>
-                <th scope="col">Word</th>
-                <th scope="col">Occurences</th>
-                <th scope="col">Percentage</th>
+                <th class="text-column-styles" scope="col">Word</th>
+                <th class="number-column-styles" scope="col">Occurences</th>
+                <th class="number-column-styles" scope="col">Percentage</th>
             </tr>
         </thead>
 
@@ -151,9 +195,9 @@ function createAggregateDataTable(aggregateWordFrequencyAnalysis, poetNameString
     // table element. 
     const tableRowsArray = Object.keys(aggregateWordFrequencyAnalysis).map(word => {
         return `<tr>
-                    <td>${word}</td>
-                    <td>${aggregateWordFrequencyAnalysis[word]}</td>
-                    <td>${((aggregateWordFrequencyAnalysis[word]/occurencesTotal)*100).toFixed(1)}%</td>
+                    <td class="text-column-styles">${word}</td>
+                    <td class="number-column-styles">${aggregateWordFrequencyAnalysis[word]}</td>
+                    <td class="number-column-styles">${((aggregateWordFrequencyAnalysis[word]/occurencesTotal)*100).toFixed(1)}%</td>
                 </tr>`;
     });
 
@@ -205,25 +249,25 @@ function createPoemViewerMenu(count, length) {
     if (count === length) {
         return `
             <ul class="poem-viewer-menu-styles">
-                <li><button type="button" class="previous-next-styles" id="js-previous-poem">previous</button></li>
-                <li class="js-current-poem-number">${count} of ${length}</li>
-                <li><button type="button" class="previous-next-styles inactive-button">next</button></li>
+                <li><button type="button" class="previous-style previous-next-styles" id="js-previous-poem">previous</button></li>
+                <li class="current-poem js-current-poem-number">${count} of ${length}</li>
+                <li class="next-li"><button type="button" class="next-style previous-next-styles inactive-button">next</button></li>
             </ul>`
     // If count is 1, then this is first poem, previous button is inactive. 
     } else if (count === 1) {
         return `
             <ul class="poem-viewer-menu-styles">
-                <li><button type="button" class="previous-next-styles inactive-button">previous</button></li>
-                <li class="js-current-poem-number">${count} of ${length}</li>
-                <li><button type="button" class="previous-next-styles" id="js-next-poem">next</button></li>
+                <li><button type="button" class="previous-style previous-next-styles inactive-button">previous</button></li>
+                <li class="current-poem js-current-poem-number">${count} of ${length}</li>
+                <li class="next-li"><button type="button" class="next-style previous-next-styles" id="js-next-poem">next</button></li>
             </ul>`
     }
     // Otherwise, this is a poem in the middle so both previous and next are active buttons. 
     return `
         <ul class="poem-viewer-menu-styles">
-            <li><button type="button" class="previous-next-styles" id="js-previous-poem">previous</button></li>
-            <li class="js-current-poem-number">${count} of ${length}</li>
-            <li><button type="button" class="previous-next-styles" id="js-next-poem">next</button></li>
+            <li><button type="button" class=" previous-style previous-next-styles" id="js-previous-poem">previous</button></li>
+            <li class="current-poem js-current-poem-number">${count} of ${length}</li>
+            <li class="next-li"><button type="button" class="next-style previous-next-styles" id="js-next-poem">next</button></li>
         </ul>`
 }
 
@@ -263,14 +307,16 @@ function createPoemViewer(poemsArray, compare) {
     // shown for individual poets and all poets combined when multiple poets were compared. 
     if (compare) {
         poemViewerString = `
-            ${createViewDataChartsPoemsButtons("js-allCharts-button", "View all charts")}
-            ${createViewDataChartsPoemsButtons("js-allTables-button", "View all data tables")}    
-            `
+            <div class="button-container-style">
+                ${createViewDataChartsPoemsButtons("js-allCharts-button", "View all charts")}
+                ${createViewDataChartsPoemsButtons("js-allTables-button", "View all data tables")}    
+            </div>`
     } else {
         poemViewerString = `
-            ${createViewDataChartsPoemsButtons("js-charts-button", "View chart")}
-            ${createViewDataChartsPoemsButtons("js-table-button", "View data table")}
-            `
+            <div class="button-container-style">
+                ${createViewDataChartsPoemsButtons("js-charts-button", "View chart")}
+                ${createViewDataChartsPoemsButtons("js-table-button", "View data table")}
+            </div>`
     }
     
     const poemMenu = createPoemViewerMenu(poemCountTracking.getCount(), poemsArray.length);
