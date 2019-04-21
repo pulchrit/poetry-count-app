@@ -10,7 +10,7 @@ function constructPoetryDBUrl(poet) {
 }
 
 function createGettingPoetDataString() {
-    return `<p class="getting-data-styles">Getting poet data...</p>`;
+    return `<p class="getting-data-styles">Retrieving poet data...</p>`;
 }
 
 // Helper function for createIndividualComparisonCharts.
