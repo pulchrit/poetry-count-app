@@ -323,8 +323,10 @@ function onPredefinedSearchSelected() {
     $(".js-predefined-searches-list").submit(event => {
         event.preventDefault();
 
-        // Notify user the program is running, remove any previous results, hide instructions.
+        // Show results section, hide Search Poets form if it's showing, 
+        // Notify user the program is running, remove any previous results, hide instructions,
         $(".js-results").removeClass("hidden");
+        if (!$(".js-poet-search-form").hasClass("hidden")) {togglePoetSearchVisbility()};
         $(".singleAggregate").html(createGettingPoetDataString());
         $(".individual").html("");
         $(".instructions").addClass("hidden");
@@ -352,6 +354,7 @@ function onPoetsEntered() {
     
         // Notify user the program is running, remove any previous results, hide instructions.
         $(".js-results").removeClass("hidden");
+        if (!$(".js-predefined-searches-list").hasClass("hidden")) {togglePredefinedSearchesVisibility()};
         $(".singleAggregate").html(createGettingPoetDataString());
         $(".individual").html("");
         $(".instructions").addClass("hidden");
@@ -383,7 +386,7 @@ function onPoetsEntered() {
 }
 
 function runApp() {
-    enableCopySelectedPoetFromList();
+    enableGetSelectedPoetFromList();
     getPoetList();
     toggleCollapsibleMenus();
     onPoetsEntered();

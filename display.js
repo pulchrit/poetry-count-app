@@ -1,15 +1,30 @@
 'use strict';
 
-// Attribution: https://hackernoon.com/copying-text-to-clipboard-with-javascript-df4d4988697f
-function enableCopySelectedPoetFromList() {
+// Append multiple selected poets to search input box.
+// Attribution: https://stackoverflow.com/questions/841722/append-text-to-input-field/841728
+function appendPoetNameToInput(poetsInput, selectedPoet){
+    if (!($(poetsInput).val())) {
+        $("#poets").val(selectedPoet);
+    } else {
+        $(poetsInput).val($(poetsInput).val() + ", " + selectedPoet);
+    }
+}
+
+// When user selects a poet, his/her name will automatically be added to the input box. 
+function enableGetSelectedPoetFromList() {
     $("#poet-list").change(function() {
         let selectedPoet = $("#poet-list option:selected").text();
-        const poetNameTextArea = document.createElement('textarea');
+        if ($(".js-poet-search-form").hasClass("hidden")) {togglePoetSearchVisbility()};
+        appendPoetNameToInput("#poets", selectedPoet);
+
+        // Attribution: https://hackernoon.com/copying-text-to-clipboard-with-javascript-df4d4988697f
+        /* const poetNameTextArea = document.createElement('textarea');
         poetNameTextArea.value = selectedPoet;
         document.body.appendChild(poetNameTextArea);
         poetNameTextArea.select();
         document.execCommand("copy"); 
         document.body.removeChild(poetNameTextArea);
+        if ($(".js-poet-search-form").hasClass("hidden")) {togglePoetSearchVisbility()}; */
     });
 }
 

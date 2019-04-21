@@ -203,6 +203,8 @@ ul {
 
 .poet-list-styles {
     padding: 0 10px;
+    width: 100%;
+    max-width: 500px;
 }
 
 #poet-list {
