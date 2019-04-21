@@ -1,5 +1,6 @@
 html {
     box-sizing: border-box;
+    background-color: #fff9f0;
 }
 
 *, *:before, *:after {
@@ -11,12 +12,16 @@ html {
 }
 
 body {
+    font-family: 'Unna', serif; 
+    font-size: 1.1em;
+    color: #533200;
     width: 100%;
     max-width: 1200px;
     /* margin: 0; */
     margin-left: auto;
     margin-right: auto;
     padding: 0;
+
 }
 
 header, main, footer {
@@ -25,10 +30,29 @@ header, main, footer {
     margin-right: auto;
 }
 
+.header-styles {
+    color: #673e00;
+    background-image: url(sepia.png);
+    background-size: cover;
+    background-repeat: no-repeat; 
+    padding: 30px 0;
+    border-left: .5px dotted #ffefd7;
+    border-right: .5px dotted #ffefd7;
+}
+
 
 h1 {
-    margin-bottom: 2px;
+    font-family: 'Seaweed Script', cursive;  
+    font-weight: normal;
+    font-size: 3em;
+    margin: 0 2px;
     text-align: center;
+}
+
+.computed {
+    font-family: 'Squada One', cursive;
+    font-size: .5em;
+    vertical-align: bottom;
 }
 
 h2 {
@@ -41,24 +65,41 @@ h2 {
 }
 
 .input-styles {
-    margin: 20px 0;
+    margin: 20px 0;   
+}
+
+.predefined-input-styles {
+    margin-bottom: 0;
 }
 
 .input-button-styles {
-    background-color: gray;
+    /* background-color: #ffa31b; */
+    /* background-color: #ff7667; */
+    background-color: #67a4ff;
     color: white;
-    width: 300px;
+    /* width: 300px; */
+    width: 100%;
     padding: 10px 0;
     margin: 20px 0;
+    transition-property: background;
+    transition-duration: .5s;
+    transition-timing-function: ease;
+}
+
+.input-button-styles:hover {
+    background-color: #ffa31b;
+    /* background-color: #ff7667; */
 }
 
 #poets {
-    width: 300px;
+    /* width: 300px; */
+    width: 100%;
     padding: 10px 5px;
     margin: 5px 0;
 }
 
 .instructions {
+    line-height: 2.1em;
     width: 90%;
     max-width: 600px;
     margin-left: auto;
@@ -67,49 +108,75 @@ h2 {
 
 button {
     cursor: pointer;
+    font-family: 'Assistant', sans-serif;
+    font-size: 1em;
+    letter-spacing: .05em;
+    border: none;
+    border-radius: 2px;
 }
+
+/* .predefined-searches-label-styles {
+    margin-top: 20px;
+} */
 
 .predefined-select-box-styles {
     margin: 10px 0;
-    width: 300px;
+    /* width: 300px; */
+    width: 100%;
 }
 
+
 .searches-collapsible, .searches-active {
-    background-color: gray;
-    color: white;
+    /* background-color: #67a4ff; */
+    background-color: #fff9f0;
+    /* color: white; */
+    color: #533200;
     cursor: pointer;
     padding: 15px;
     width: 100%;
     /* max-width: 400px; */
-    border: none;
+    /* border: none; */
+    border: .5px solid #67a4ff;
     text-align: left;
+    vertical-align: middle;
+    line-height: 1.25em;
     outline: none;
-    font-size: .9em;
+    font-size: 1em;
     margin: 10px 0;
+    /* transition-property: background; 
+    transition-duration: .5s;
+    transition-timing-function: ease;*/
 }
 
-.searches-collapsible:hover {
-    background-color: darkgray;
-}
+
+
+/* .searches-collapsible:hover, .searches-active {
+    background-color: #00398e;
+} */
 
 .searches-collapsible:after, .searches-active:after {
-    content: '\02795'; /* Unicode character for "plus" sign (+) */
-    font-size: .9em;
-    color: white;
+    font-size: 1.2em;
+    color: #533200;
+    /* color: white; */
+    content: "+";
     float: right;
     margin-left: 5px;
 }
 
 .searches-active:after {
-    content: "\2796"; /* Unicode character for "minus" sign (-) */
+    /* color: white; */
+    color: #533200;
+    content: "-";
 }
 
 .collapsible-content {
     padding: 0 15px;
     overflow: hidden;
     /* background-color: lightgray; */
-    width: 90%;
-    max-width: 400px;
+    width: 85%;
+    /* max-width: 400px; */
+    margin-left: auto;
+    margin-right: auto;
 }
 
 ul {
@@ -144,7 +211,7 @@ ul {
 
 .getting-data-styles {
     font-weight: bold;
-    color: red;
+    color: #ff7667;
     margin: 30px;
 }
 
@@ -152,8 +219,8 @@ ul {
 /* HighCharts styles */
 .charts-style {
     padding: 10px;
-    margin: 0 0 30px 0; 
-    border: 1px solid gray;
+    margin: 30px 0 30px 0; 
+    border: 1px solid #ffefd7;
 }
 
 
@@ -182,6 +249,7 @@ ul {
 }
 .current-poem {
     text-align: center; 
+    font-family: 'Assistant', sans-serif;
 }
 
 .poem-viewer-menu-styles {
@@ -196,11 +264,21 @@ ul {
 
 
 .table-poem-button-styles {
-    background-color: gray;
+    /* background-color: #ffa31b; */
+    /* background-color: #ff7667; */
+    background-color: #67a4ff;
     color: white;
     width: 48%;
     padding: 10px 0;
-    margin: 30px 0;
+    margin: 40px 0 30px 0;
+    transition-property: background;
+    transition-duration: .5s;
+    transition-timing-function: ease;
+}
+
+.table-poem-button-styles:hover {
+    /* background-color: #ff7667; */
+    background-color: #ffa31b;
 }
 
 .poem-title-styles {
@@ -255,21 +333,25 @@ caption {
 /* Alternate row styling
 Attribution: https://www.w3.org/Style/Examples/007/evenodd.en.html */
 tr:nth-child(even) {
-    background: white;
+    background: #fff9f0;
 }
 
 tr:nth-child(odd) {
-    background: gray;
+    background: #ffefd7; 
+    /* background: #dcd7d6; */
 }
 
 
 th {
-    background: white;
+    background: #fff9f0;
 }
 
 .footer {
+    border-top: .5px solid #ffefd7;
     margin-top: 15%;
+    margin-bottom: 10px;
     text-align: center;
+    font-size: .8em;
 }
 
 .footer address {
@@ -281,9 +363,9 @@ th {
 
 @media screen and (min-width: 750px) {
     
-    h1, h2 {
+    /* h1, h2 {
         text-align: left;
-    }
+    } */
 
     .search-predefined-large-screen-layout {
         display: flex;
@@ -310,6 +392,16 @@ th {
     .button-container-style, table {
         grid-column: 1 / 3;
     }
+
+    
+    .table-poem-button-styles {
+        margin-bottom: 0px;
+    }
+
+    .individual-charts-large-screen-styles {
+        margin-top: 0;
+    }
+
 
 }
 

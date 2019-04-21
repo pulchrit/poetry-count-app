@@ -14,7 +14,7 @@
         <!--Normalize css-->
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.1.1/normalize.min.css">
         <!--Link to Google Fonts-->
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Assistant|Seaweed+Script|Squada+One|Unna" rel="stylesheet">      
         <!--Link to custom css-->
         <link rel="stylesheet" type="text/css" href="index.css">
         <!--Link to HighCharts-->
@@ -26,21 +26,28 @@
 
     <body>
         
-        <header role="banner">
+        <header class="header-styles" role="banner">
             
-            <h1>Poems, computed.</h1>
-            <h2>A new view of your favorite poets.</h2>
+            <h1>Poems<span class="computed">computed</span></h1>
+            <!-- <h2>A new view of your favorite poets.</h2> -->
+
+            <p class="instructions">
+                Interested in seeing a different view of the themes and word choices of your 
+                favorite poets? Enter the name(s) below to perform a word frequency analysis, 
+                or choose one of the predefined searches. Results will be displayed in a 
+                word chart. You can also view the data or the poems used in the analysis.  
+            </p>
        
         </header>
 
         <main role="main">
 
-            <p class="instructions">
-                Interested in seeing a different view of word choices of your 
+            <!-- <p class="instructions">
+                Interested in seeing a different view of themes and word choices of your 
                 favorite poets? Enter the name(s) below to perform a word frequency analysis, 
                 or choose one of the predefined searches. Results will be displayed in a 
                 word chart. You can also view the data or the poems used in the analysis.  
-            </p>
+            </p> -->
             
             <div class="search-predefined-large-screen-layout">
 
@@ -50,8 +57,6 @@
 
                     <form role="form" class="collapsible-content hidden js-poet-search-form">
                         
-                        <!-- Multiple poets can only be separated by commas, no spaces allowed. 
-                            Hence the regex pattern: \S+ (meaning, no spaces, 1 or more times)-->
                         <label class="input-styles" for="poets">Enter poet (or poets separated by commas):
                             <input type="text" id="poets" name="poets" required placeholder="Shakespeare, Emily Dickinson">
                         </label>
@@ -76,7 +81,7 @@
                     <button type="button" class="searches-collapsible js-predefined-searches">Predefined searches:</button>
                     <form role="form" class="collapsible-content hidden js-predefined-searches-list">
                             
-                            <label for="predefined-searches">Please select a poet or poets:</label>
+                            <label class="input-styles predefined-input-styles" for="predefined-searches">Please select a poet or poets:</label>
                             <select class="predefined-select-box-styles" id="predefined-searches">
                                 <optgroup label="Individual poets">
                                     <option value="Jupiter Hammon">Jupiter Hammon</option>
@@ -117,6 +122,9 @@
             
             <p>Powered by <a href="http://poetrydb.org/index.html">PoetryDB</a> 
                 and <a href="https://www.highcharts.com/">Highcharts</a>.</p>
+
+            <p>Image credit: <a href="https://commons.wikimedia.org/w/index.php?curid=976862">
+                Emily Dickinson's Wild Nights Manuscript, Public Domain</a> </p>
 
             <address>
                 &copy;2019  <a href="mailto:pulchrit@gmail.com">Melissa Lafranchise</a>

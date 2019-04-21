@@ -26,6 +26,9 @@ function createViewDataChartsPoemsButtons(id, text) {
 
 function createHighChartWordChart(...args) {
     Highcharts.chart(args[1], {
+        chart: {
+            backgroundColor: '#fff9f0',
+        },
         series: [{
             type: 'wordcloud',
             data: args[0],
@@ -33,12 +36,15 @@ function createHighChartWordChart(...args) {
         }],
         plotOptions: {
             series: {
-                minFontSize: 5,
+                minFontSize: 7,
                 maxFontSize: 55
             }
         },
         title: {
-            text: "Top 100 Words for " + args[2]
+            text: "Top 100 Words for " + args[2],
+            style: {
+                color: '#533200'
+            }
         },
         credits: {
             enabled: false
