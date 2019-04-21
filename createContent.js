@@ -251,11 +251,12 @@ function getPoemObject(poemsArray, count) {
 // Creates the prev, next and current count navigation for the poem viewer screen.
 function createPoemViewerMenu(count, length) {
     
-    // If count equals length, then this is the last poem, next button is inactive.
-    if (count === length) {
+    // If count is 1 and lenght is 1, there is only one poem to display, so both prev and next
+    // buttons are inactive. 
+    if (count === 1 && length === 1) {
         return `
             <ul class="poem-viewer-menu-styles">
-                <li><button type="button" class="previous-style previous-next-styles" id="js-previous-poem">previous</button></li>
+                <li><button type="button" class="previous-style previous-next-styles inactive-button">previous</button></li>
                 <li class="current-poem js-current-poem-number">${count} of ${length}</li>
                 <li class="next-li"><button type="button" class="next-style previous-next-styles inactive-button">next</button></li>
             </ul>`
@@ -266,6 +267,14 @@ function createPoemViewerMenu(count, length) {
                 <li><button type="button" class="previous-style previous-next-styles inactive-button">previous</button></li>
                 <li class="current-poem js-current-poem-number">${count} of ${length}</li>
                 <li class="next-li"><button type="button" class="next-style previous-next-styles" id="js-next-poem">next</button></li>
+            </ul>`
+    // If count equals length, then this is the last poem, next button is inactive.
+    } else if (count === length) {
+        return `
+            <ul class="poem-viewer-menu-styles">
+                <li><button type="button" class="previous-style previous-next-styles" id="js-previous-poem">previous</button></li>
+                <li class="current-poem js-current-poem-number">${count} of ${length}</li>
+                <li class="next-li"><button type="button" class="next-style previous-next-styles inactive-button">next</button></li>
             </ul>`
     }
     // Otherwise, this is a poem in the middle so both previous and next are active buttons. 

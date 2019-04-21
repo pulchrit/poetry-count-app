@@ -24,6 +24,18 @@ body {
 
 }
 
+a:link {
+    color: #67a4ff;
+}
+
+a:hover, a:focus, a:active {
+    color: #f39100;
+}
+
+a:visited {
+    color: #9100f3;
+}
+
 header, main, footer {
     width: 90%;
     margin-left: auto;
@@ -299,7 +311,14 @@ ul {
     border: none;
     text-decoration: underline;
     padding: 0px;
-}
+    /* color: #67a4ff; */ 
+}   
+
+/* .previous-next-styles:hover, 
+.previous-next-styles:focus,  
+.previous-next-styles:active {
+    color: #f39100;
+} */
 
 .inactive-button {
     cursor: default;

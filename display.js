@@ -40,13 +40,17 @@ function togglePoetSearchVisbility() {
     $(".js-poet-search").toggleClass("searches-collapsible searches-active");
 }
 
-// Opens/closes 'Search poets' and 'Predefined searches' on mobile/smaller screens.
-// May not be necessary for larger screens.
+// Opens/closes 'Search poets' and 'Predefined searches' on click or on focus of 
+// those buttons. Toggles the visibility of these collapsible menus when the other 
+// menu has been submitted (i.e., toggles Predefined searches off when Search poets
+// has been submitted and vice-versa).
 function toggleCollapsibleMenus() { 
     $(".js-predefined-searches").click(togglePredefinedSearchesVisibility);
+    $(".js-predefined-searches").focus(togglePredefinedSearchesVisibility); 
     $(".js-predefined-searches-list").submit(togglePredefinedSearchesVisibility);
 
     $(".js-poet-search").click(togglePoetSearchVisbility);
+    $(".js-poet-search").focus(togglePoetSearchVisbility);
     $(".js-poet-search-form").submit(togglePoetSearchVisbility);
 }
 
