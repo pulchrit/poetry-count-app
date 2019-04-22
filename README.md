@@ -10,4 +10,4 @@ http://melissalafranchise.com/poetry-count-app/index.html
 - HTML, CSS, Javascript, jQuery
 - Fetch API
 - PoetryDB API
-- Highcharts library
+- Highcharts API
