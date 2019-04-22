@@ -3,8 +3,7 @@ Poems, computed is an asynchronous web app that searches a small poetry database
 
 ## Live site
 http://melissalafranchise.com/poetry-count-app/index.html
-
-![Poems computed screen shot](poetry-count-app.png)
+[![Poems computed screen shot] (poetry-count-app.png)](http://melissalafranchise.com/poetry-count-app/index.html)
 
 ## Technologies used
 - HTML, CSS, Javascript, jQuery
