@@ -16,15 +16,8 @@ function enableGetSelectedPoetFromList() {
         let selectedPoet = $("#poet-list option:selected").text();
         if ($(".js-poet-search-form").hasClass("hidden")) {togglePoetSearchVisbility()};
         appendPoetNameToInput("#poets", selectedPoet);
-
-        // Attribution: https://hackernoon.com/copying-text-to-clipboard-with-javascript-df4d4988697f
-        /* const poetNameTextArea = document.createElement('textarea');
-        poetNameTextArea.value = selectedPoet;
-        document.body.appendChild(poetNameTextArea);
-        poetNameTextArea.select();
-        document.execCommand("copy"); 
-        document.body.removeChild(poetNameTextArea);
-        if ($(".js-poet-search-form").hasClass("hidden")) {togglePoetSearchVisbility()}; */
+        $(".js-error").addClass("hidden");
+        
     });
 }
 
@@ -40,17 +33,16 @@ function togglePoetSearchVisbility() {
     $(".js-poet-search").toggleClass("searches-collapsible searches-active");
 }
 
-// Opens/closes 'Search poets' and 'Predefined searches' on click or on focus of 
+// Opens/closes 'Search poets' and 'Predefined searches' on click of 
 // those buttons. Toggles the visibility of these collapsible menus when the other 
 // menu has been submitted (i.e., toggles Predefined searches off when Search poets
 // has been submitted and vice-versa).
 function toggleCollapsibleMenus() { 
+ 
     $(".js-predefined-searches").click(togglePredefinedSearchesVisibility);
-    $(".js-predefined-searches").focus(togglePredefinedSearchesVisibility); 
     $(".js-predefined-searches-list").submit(togglePredefinedSearchesVisibility);
 
     $(".js-poet-search").click(togglePoetSearchVisbility);
-    $(".js-poet-search").focus(togglePoetSearchVisbility);
     $(".js-poet-search-form").submit(togglePoetSearchVisbility);
 }
 
