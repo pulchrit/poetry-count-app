@@ -1,9 +1,13 @@
-# poetry-count-app
-Help users analyze the words used by a poet or poets by calling the PoetryDB API and analyzing the response data.
+# Poems, computed
+Poems, computed is an asynchronous web app that searches a small poetry database for a poet or poets. You can enter a poet(s) name or you can select from a few sample searches. Then the program performs a word frequency analysis on the poems for each (or aggregate) poets and displays a word chart representing the word frequency for the top 100 words. You can also click buttons to view the data tables backing the word charts or to view the poems used in the analysis. 
 
-- Asynchronous web app that uses the Fetch API to request data from the PoetryDB API based on user search term(s).
-    - Predefined searches are also available. 
-- The program extracts words from the poem(s), tallies word frequency, and plots/displays it using HighCharts. 
-- When searching multiple poets, their word frequency charts can be compared using small multiples.
-- A table or partial table of word data is displayed. 
-- The actual poem(s) are also displayed.
+## Live site
+http://melissalafranchise.com/poetry-count-app/index.html
+
+![Poems computed screen shot](poetry-count-app.png)
+
+## Technologies used
+- HTML, CSS, Javascript, jQuery
+- Fetch API
+- PoetryDB API
+- Highcharts library
