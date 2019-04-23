@@ -1,5 +1,10 @@
 'use strict';
 
+// Attribution: https://howchoo.com/g/yjfjmty1zjb/how-to-animate-scroll-in-jquery
+function scrollToTopOfPage() { 
+    $("html, body").animate({ scrollTop: 0 }, 100);
+}
+
 // Append multiple selected poets to search input box.
 // Attribution: https://stackoverflow.com/questions/841722/append-text-to-input-field/841728
 function appendPoetNameToInput(poetsInput, selectedPoet){
@@ -7,6 +12,7 @@ function appendPoetNameToInput(poetsInput, selectedPoet){
         $("#poets").val(selectedPoet);
     } else {
         $(poetsInput).val($(poetsInput).val() + ", " + selectedPoet);
+        enableCheckbox();
     }
 }
 
@@ -104,6 +110,7 @@ function handleViewPoemsClicked(poemsArray, compare) {
         $(".individual").html("");
         poemCountTracking.resetCount();
         $(".singleAggregate").html(createPoemViewer(poemsArray, compare));
+        scrollToTopOfPage();
     })
 } 
 
