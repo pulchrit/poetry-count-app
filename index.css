@@ -17,14 +17,14 @@ body {
     color: #533200;
     width: 100%;
     max-width: 1200px;
-    /* margin: 0; */
     margin-left: auto;
     margin-right: auto;
     padding: 0;
-
 }
 
-header, main, footer {
+header, 
+main, 
+footer {
     width: 90%;
     margin-left: auto;
     margin-right: auto;
@@ -39,7 +39,6 @@ header, main, footer {
     border-left: .5px dotted #ffefd7;
     border-right: .5px dotted #ffefd7;
 }
-
 
 h1 {
     font-family: 'Seaweed Script', cursive;  
@@ -68,16 +67,17 @@ h2 {
     margin: 20px 0;   
 }
 
+.gray-checkbox {
+    color: #d6d5d4;
+}
+
 .predefined-input-styles {
     margin-bottom: 0;
 }
 
 .input-button-styles {
-    /* background-color: #ffa31b; */
-    /* background-color: #ff7667; */
     background-color: #67a4ff;
     color: white;
-    /* width: 300px; */
     width: 100%;
     padding: 10px 0;
     margin: 20px 0;
@@ -88,11 +88,9 @@ h2 {
 
 .input-button-styles:hover {
     background-color: #ffa31b;
-    /* background-color: #ff7667; */
 }
 
 #poets {
-    /* width: 300px; */
     width: 100%;
     padding: 10px 5px;
     margin: 5px 0;
@@ -115,61 +113,38 @@ button {
     border-radius: 2px;
 }
 
-/* .predefined-searches-label-styles {
-    margin-top: 20px;
-} */
-
 .predefined-select-box-styles {
     margin: 10px 0;
-    /* width: 300px; */
     width: 100%;
 }
 
-
 .searches-collapsible, .searches-active {
-    /* background-color: #67a4ff; */
     background-color: #fff9f0;
-    /* color: white; */
     color: #533200;
     cursor: pointer;
     padding: 15px;
     width: 100%;
-    /* max-width: 400px; */
-    /* border: none; */
     border: .5px solid #67a4ff;
     text-align: left;
     vertical-align: middle;
     line-height: 1.25em;
-    /* outline: none; */
     font-size: 1em;
     margin: 10px 0;
-    /* transition-property: background; 
-    transition-duration: .5s;
-    transition-timing-function: ease;*/
 }
 
-
-
 .searches-collapsible:hover  {
-    /* border-color: #ffa31b; */
     outline: none;
 }  
-/* .searches-collapsible:focus {
-    outline: inherit;
-} */
-
 
 .searches-collapsible:after, .searches-active:after {
     font-size: 1.2em;
     color: #533200;
-    /* color: white; */
     content: "+";
     float: right;
     margin-left: 5px;
 }
 
 .searches-active:after {
-    /* color: white; */
     color: #533200;
     content: "-";
 }
@@ -177,9 +152,7 @@ button {
 .collapsible-content {
     padding: 0 15px;
     overflow: hidden;
-    /* background-color: lightgray; */
     width: 85%;
-    /* max-width: 400px; */
     margin-left: auto;
     margin-right: auto;
 }
@@ -222,15 +195,11 @@ ul {
     margin: 30px;
 }
 
-
-/* HighCharts styles */
 .charts-style {
     padding: 10px;
     margin: 30px 0 30px 0; 
     border: 1px solid #ffefd7;
 }
-
-
 
 .line-indented {
     padding-left: 25px;
@@ -269,10 +238,7 @@ ul {
     padding: 0 10px;
 }
 
-
 .table-poem-button-styles {
-    /* background-color: #ffa31b; */
-    /* background-color: #ff7667; */
     background-color: #67a4ff;
     color: white;
     width: 48%;
@@ -284,7 +250,6 @@ ul {
 }
 
 .table-poem-button-styles:hover {
-    /* background-color: #ff7667; */
     background-color: #ffa31b;
 }
 
@@ -304,14 +269,7 @@ ul {
     border: none;
     text-decoration: underline;
     padding: 0px;
-    /* color: #67a4ff; */ 
 }   
-
-/* .previous-next-styles:hover, 
-.previous-next-styles:focus,  
-.previous-next-styles:active {
-    color: #f39100;
-} */
 
 .inactive-button {
     cursor: default;
@@ -354,7 +312,6 @@ tr:nth-child(even) {
 
 tr:nth-child(odd) {
     background: #ffefd7; 
-    /* background: #dcd7d6; */
 }
 
 
@@ -381,22 +338,27 @@ th {
 .text-links:hover, 
 .text-links:focus, 
 .text-link:active {
-    /* color: #f39100; */
     color: #df1d07;
 }
 
 .footer address {
     font-style: normal;
-
 }
 
+
 /* Responsive layout changes */
+@media screen and (max-width: 320px) {
+    table {
+        font-size: .8em;
+        padding: 0;
+    }
+
+    th, td {
+        padding: 3px 3px;
+    }
+}
 
 @media screen and (min-width: 750px) {
-    
-    /* h1, h2 {
-        text-align: left;
-    } */
 
     .search-predefined-large-screen-layout {
         display: flex;
@@ -424,7 +386,6 @@ th {
         grid-column: 1 / 3;
     }
 
-    
     .table-poem-button-styles {
         margin-bottom: 0px;
     }
@@ -432,8 +393,6 @@ th {
     .individual-charts-large-screen-styles {
         margin-top: 0;
     }
-
-
 }
 
 

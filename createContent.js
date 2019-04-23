@@ -4,7 +4,6 @@ function createPoetsListString(responseJSON) {
     return responseJSON.authors.map(poet => `<option class="poet-options">${poet}</option>`).join('\n'); 
 }
 
-// Helper function for onPoetsEntered.
 function constructPoetryDBUrl(poet) {
     return `http://poetrydb.org/author/${poet}`;
 }
@@ -13,8 +12,7 @@ function createGettingPoetDataString() {
     return `<p class="getting-data-styles">Retrieving poet data...</p>`;
 }
 
-// Helper function for createIndividualComparisonCharts.
-// Create divs for each poet. Charts will be rendered to these divs.
+// Charts will be rendered to these divs.
 function createPoetDivs(poetNamesArray) {
     poetNamesArray.forEach(poet => $(".individual").append(
         `<div class="charts-style individual-charts-large-screen-styles" id="${poet}"></div`));
@@ -52,7 +50,6 @@ function createHighChartWordChart(...args) {
     });
 }
 
-// Creates highcharts for each poet when multiple poets are compared.
 function createIndividualComparisonCharts(individualPoetWordFrequency) {
 
     // Clear out any previous results.
@@ -65,17 +62,13 @@ function createIndividualComparisonCharts(individualPoetWordFrequency) {
             ${createViewDataChartsPoemsButtons("js-poems-button", "View poems")}
         </div>`);
 
-        // { Shakespeare: {word1: 1, word2: 15}, "Emily Dickinson": {word1: 15, word2: 25}, ...}
-    // Get poet names in an array for later iteration. 
     const poetNamesArray = Object.keys(individualPoetWordFrequency);
 
-    // Create divs with ids equaling poet names.
     createPoetDivs(poetNamesArray);
 
     // Create data array and chart for each poet.    
     Object.keys(individualPoetWordFrequency).forEach(poet => {
 
-        // Create the data for each poet. 
         let individualPoetData = Object.keys(individualPoetWordFrequency[poet]).map(word => {
             return {
                 name: word,
@@ -88,7 +81,6 @@ function createIndividualComparisonCharts(individualPoetWordFrequency) {
     })
 }
 
-// Creates a chart for either a single poet or multiple poets in aggregate. 
 function createAggregateComparisonChart(aggregateWordFrequencyAnalysis, poetNameString) {
     
     const aggregatePoetData = Object.keys(aggregateWordFrequencyAnalysis).map(wordKey => {
@@ -109,17 +101,14 @@ function createAggregateComparisonChart(aggregateWordFrequencyAnalysis, poetName
         </div>
         <div class="charts-style" id="aggregateChart"></div>`);
     
-    // Create and render highchart for single poet or multipe poets combined.
     return createHighChartWordChart(aggregatePoetData, "aggregateChart", poetNameString);
 }
 
-// Helper function for processAllData.
-// Creates a string of poet names for use in chart and other titles. 
+// For use in chart and other titles. 
 function createPoetNameString(allData) { 
     return allData.map(currentPoet => currentPoet.name).join(", ");
 }
 
-// Create data tables for each poet when multiple poets are compared. 
 function createIndividualDataTable(individualPoetWordFrequency) {
 
     const occurencesTotalByPoet = getIndividualSumOfWordOccurences(individualPoetWordFrequency);
@@ -169,12 +158,7 @@ function getAggregateSumOfWordOccurences(aggregateWordFrequencyAnalysis) {
         total += aggregateWordFrequencyAnalysis[currentVal], 0);
 }
 
-// Create data table for single poet or multiple poets in aggregate. 
 function createAggregateDataTable(aggregateWordFrequencyAnalysis, poetNameString) {
-
-    // Reduce word frequency object to get sum of occurences to calculate percentage below.
-    /* const occurencesTotal = Object.keys(aggregateWordFrequencyAnalysis).reduce((total, currentVal) => {
-        return total += aggregateWordFrequencyAnalysis[currentVal]}, 0); */
 
     const occurencesTotal = getAggregateSumOfWordOccurences(aggregateWordFrequencyAnalysis);
     
@@ -215,23 +199,19 @@ function createAggregateDataTable(aggregateWordFrequencyAnalysis, poetNameString
     return tableString; 
 }
 
-// Helper object for poem viewer screen.
 // Create global object to track poem count.
 const poemCountTracking = {
     count: 1,
     
     incrementCount: function() {
-        //poemCountTracking.count++;
         this.count++;
     },
 
     decrementCount: function() {
-        //poemCountTracking.count--;
         this.count--;
     },
 
     resetCount: function() {
-        //poemCountTracking.count = 1;
         this.count = 1;
     },
 
@@ -240,14 +220,11 @@ const poemCountTracking = {
     }
 };
 
-// Helper function for createPoemViewer.
-// Gets a specific poem object (i.e. poem) from the array of poems to 
-// render in the poem viewer screen.
+// To render in the poem viewer screen.
 function getPoemObject(poemsArray, count) {
     return poemsArray.find(poem => poem.poemNumber === count);
 }
 
-// Helper function for createPoemViewer.
 // Creates the prev, next and current count navigation for the poem viewer screen.
 function createPoemViewerMenu(count, length) {
     
@@ -286,9 +263,8 @@ function createPoemViewerMenu(count, length) {
         </ul>`
 }
 
-// Helper function for createPoemString. Processes lines into <p> elements.
-// Tries to account for indentation and line breaks to mirror the poem's
-// original layout.
+// Processes lines into <p> elements. Tries to account for indentation and 
+// line breaks to mirror the poem's original layout.
 function createPoemLinesString(linesArray) {
     const poemLines = linesArray.map(line => {
         if (!line) {
@@ -302,7 +278,6 @@ function createPoemLinesString(linesArray) {
     return poemLines.join("\n");
 }
 
-// Helper function for createPoemViewer.
 // Creates the title, author, and lines elements to render the poem 
 // to the poem viewer screen.
 function createPoemString(poemObject) {
@@ -311,9 +286,7 @@ function createPoemString(poemObject) {
         <p class="poem-author-styles">By: ${poemObject.author}</p>
         <div class="full-poem-styles">${createPoemLinesString(poemObject.lines)}</div>`
 }
-
-// Helper function for handleViewPoemsClicked. Same function works for
-// individual poets compared search and single/aggregate poet search. 
+ 
 function createPoemViewer(poemsArray, compare) {
     
     let poemViewerString;
@@ -324,7 +297,7 @@ function createPoemViewer(poemsArray, compare) {
         poemViewerString = `
             <div class="button-container-style">
                 ${createViewDataChartsPoemsButtons("js-allCharts-button", "View all charts")}
-                ${createViewDataChartsPoemsButtons("js-allTables-button", "View all data tables")}    
+                ${createViewDataChartsPoemsButtons("js-allTables-button", "View all data")}    
             </div>`
     } else {
         poemViewerString = `

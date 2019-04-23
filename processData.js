@@ -1,8 +1,34 @@
 'use strict';
 
+function disableCheckbox() {
+    $("#compare-poets").prop("disabled", false);
+    $("#checkbox").addClass("gray-checkbox");
+}
+
+function enableCheckbox() {
+    $("#compare-poets").prop("disabled", false);
+    //$("#compare-poets").removeAttr("disabled");
+    $("#checkbox").removeClass("gray-checkbox");
+}
+
+function enableCheckboxOnCommaEntered() {
+    $("#poets").keydown(event => {
+        if (event.which === 188) {
+            enableCheckbox();
+        }
+    }); 
+}
+
+function enableCheckboxOnCommaDetected() {
+    $("#poets").change(event => {
+        if ($(event.currentTarget).val().includes(",")) {
+            enableCheckbox();
+        }
+    });      
+}
+
 // poetList = {authors: ["Adam Lindsay Gordon","Alan Seeger"...]}
 function getPoetList() {
-
     fetch("http://poetrydb.org/authors")
     .then(handleResponseErrors)
     .then(responseJSON => displayPoetsList(responseJSON))
@@ -16,7 +42,6 @@ function getPoetList() {
     })
 }
 
-// Helper function for getAllPoetData.
 function makePoetDataObject(results) {
     return {
         name: results[0].author,
@@ -24,7 +49,6 @@ function makePoetDataObject(results) {
     };
 }
 
-// Helper function for getAggregateArrayOfWords and makeSeparateWordsObject.
 // Returns a flattened array of words in lowercase, without punctuation.
 function flattenToWordsOnly(currentPoetObject) {
     return currentPoetObject.individualData.flatMap(currentPoetData => 
@@ -36,14 +60,8 @@ function flattenToWordsOnly(currentPoetObject) {
     );
 }
 
-// Helper function for processAllData.
-// Returns a clean array of words with extraneous nulls removed.
 function getAggregateArrayOfWords(allData) {
 
-    // Using nested flatMaps to get down to the words in each poem. 
-    // Changing each word to lowercase, removing punctuation marks (except 
-    // apostrophes and hyphens), removing empty strings and nulls (see below
-    // for more on null). 
     const words = allData.flatMap(flattenToWordsOnly);
 
     // Need to do a secondary filter to remove several pesky nulls that weren't
@@ -52,10 +70,7 @@ function getAggregateArrayOfWords(allData) {
     return words.filter(word => word !== null); 
 } 
 
-// Helper function for getIndividualArraysOfWords.
-// Saving new object that relates poet to their list of words.
-// This is so I can identify the words by poet name (which is 
-// pretty obvious, I guess. :) )
+// Saving new object that relates poet to their list of words for comparison.
 function makeSeparateWordsObject(currentPoetObject) {
     return {
         poet: currentPoetObject.name,
@@ -63,8 +78,6 @@ function makeSeparateWordsObject(currentPoetObject) {
     };
 }
 
-// Helper function for processAllData.
-// Produces an array of objects that relate a poet to their words.
 function getIndividualArraysOfWords(allData) {
 
     const separateWords = allData.map(makeSeparateWordsObject);
@@ -76,23 +89,22 @@ function getIndividualArraysOfWords(allData) {
     return separateWords;
 }
 
-// Helper function for getIndividualWordFrequencyAnalysis and 
-// to get the AggregateWordFrequencyAnalysis.
-// Filters out common words like "a", "the", "and" from the Object. 
+// Filters out common words like "a", "the", "and". 
 // Converts object to array of subarrays to sort results and restrict to top 100.
 // Then converts back to an object. 
 // I'm sure there is a better way to do this... 
 function filterAndRestrictWordFrequency(wordFrequency) {
     
-    // Iterate over keys, delete keys (and thereby values) that are 
-    // in the notTheseWords array. These words don't have a lot of meaning
-    // when taken out of the context of their sentences.
-    const notTheseWords = ["a", "and", "as", "at", "but", "by", "for", "from", 
+    const notTheseWords = ["a", "an", "and", "as", "at", "but", "by", "for", "from", 
                             "in", "it", "its", "of", "on", "or", "that", 
                             "the", "then", "this", "these", "those", "though", 
-                            "to", "upon", "with", "'"];
+                            "to", "upon", "with", "'", "i", "am", "is", "were", "was",
+                            "are", "you", "he", "him", "her", "she", "your", "yours",
+                            "my", "mine", "thee", "thou", "they", "where", "which", "who",
+                            "why", "when", "what", "we", "their", "our", "thy", "not", "so",
+                            "his", "be", "do", "shall", "each", "such", "some", "there", "me",
+                            "if", "than", "o", "o'r", "all", "no", "had", "has", "how"];
     
-    // Delete key/value pairs that are in the notTheseWords array.
     Object.keys(wordFrequency).forEach(key => {
         if (notTheseWords.includes(key.toString())) {
             delete wordFrequency[key];
@@ -110,19 +122,15 @@ function filterAndRestrictWordFrequency(wordFrequency) {
         return b[1] - a[1];
     });
 
-    // Slice off first 100 words of sorted array.
     let first100Words = sortWordFrequency.slice(0, 100);
 
-    // Reduce array to new word frequency object for top 100 words.
-    // {word1: 34, word2: 23...}
+    // Reduce array to new word frequency object for top 100 words only.
     return first100Words.reduce((first100, currentWordArray) => {
         first100[currentWordArray[0]] = currentWordArray[1];
         return first100;
     }, {});
 }
 
-// Helper function for getIndividualWordFrequencyAnalysis and 
-// getAggregateWordFrequencyAnalysis.
 // Reduces an array to an object of word frequencies.
 // {word1: 13, word2: 44, ...}
 function reduceWordArrayToWordFrequency(wordArray) {
@@ -151,6 +159,7 @@ function getIndividualWordFrequencyAnalysis(individualWordArrayOfObjects) {
     return individualPoetWordFrequency;
 }
 
+
 // Reduce word frequency object to get sum of occurences to calculate percentage below.
 // From this: { Shakespeare: {word1: 1, word2: 15}, "Emily Dickinson": {word1: 15, word2: 25}, ...}
 // To this: {Shakespear: 345, Emily: 3321, ...}
@@ -162,9 +171,6 @@ function getIndividualSumOfWordOccurences(individualPoetWordFrequency) {
     }, {}); 
 }
 
-// Helper function for createPoemsArray.
-// Create a poem object to use in rendering each poem to the
-// poem viewer screen.
 function createPoemViewerPoemObject(currentPoemObject, index) {
     return {
         poemNumber: index + 1,
@@ -174,9 +180,6 @@ function createPoemViewerPoemObject(currentPoemObject, index) {
     };
 }
 
-// Helper function for processAllData to view poems.
-// Creates an array of poem objects for us in rendering 
-// poems to the poem viewer screen.
 function createPoemsArray(allData) {
 
     const aggregatePoems = allData.flatMap(currentPoetObject => {
@@ -211,11 +214,6 @@ function processAllData(allData, compare) {
         // Get a word frequency object for each individual poet.
         // { Shakespeare: {word1: 1, word2: 15}, "Emily Dickinson": {word1: 15, word2: 25}, ...}
         individualPoetWordFrequency = getIndividualWordFrequencyAnalysis(individualWordArrayOfObjects);
-
-        // Get an object relating each poem array to each poet.
-        // {Shakespeare: [{poem: 1, title: "title", lines: ["line1", "line2"]}, {}],
-        // Emily Dickinson: [{poem: 1, title: "title", lines: ["line1", "line2"]}, {}]}
-        //individualPoemsByPoetObject = getIndividualPoemsByPoet(allData);
 
         // Create chart using HighCharts from word frequency object.
         createIndividualComparisonCharts(individualPoetWordFrequency);
@@ -265,7 +263,6 @@ function processAllData(allData, compare) {
     handlePreviousPoemClicked(poemsArray, compare);
 } 
 
-// Helper function for getAllPoetData.
 function handleResponseErrors(response) {
     if (!response.ok) {
         throw Error(response.statusText);
@@ -317,7 +314,6 @@ function getAllPoetData(allURLS, compare) {
         }) 
 }
 
-// Listen for when a user selects a predefined search and call getAllPoetData.
 function onPredefinedSearchSelected() {
 
     $(".js-predefined-searches-list").submit(event => {
@@ -346,24 +342,24 @@ function onPredefinedSearchSelected() {
     });
 }  
 
-// Listen for when a user enters a search and call getAllPoetData.
 function onPoetsEntered() {
     
     $(".js-poet-search-form").submit(event => {
         event.preventDefault();
     
-        // Notify user the program is running, remove any previous results, hide instructions.
+        // Notify user the program is running, remove any previous results, hide instructions, disable
+        // checkbox.
         $(".js-results").removeClass("hidden");
         if (!$(".js-predefined-searches-list").hasClass("hidden")) {togglePredefinedSearchesVisibility()};
         $(".singleAggregate").html(createGettingPoetDataString());
         $(".individual").html("");
         $(".instructions").addClass("hidden");
+        disableCheckbox();
         
-        // Get poet(s) entered and split into array
-        // so that we can make individual calls to the
-        // PoetyDB API. Regex splits on  ", " or "," to 
-        // make it easier on the user.
-        const poets = $("#poets").val().split(/, +|[,]+/);
+        // Get poet(s) entered and split into array so that we can make individual calls to the
+        // PoetyDB API. Regex splits on  ", " or "," to make it easier on the user. 
+        // Empty strings are filtered out to prevent Fetch errors.
+        const poets = $("#poets").val().split(/, +|[,]+/).filter(name => name !== "");
 
         // If compare is checked, then save compare variable as true.
         // Attribution: https://stackoverflow.com/questions/2834350/get-checkbox-value-in-jquery
@@ -374,7 +370,6 @@ function onPoetsEntered() {
             compare = true;
         }
 
-        // Create array of all URLs to call
         const allURLs = poets.map(constructPoetryDBUrl);
 
         getAllPoetData(allURLs, compare); 
@@ -386,6 +381,8 @@ function onPoetsEntered() {
 }
 
 function runApp() {
+    enableCheckboxOnCommaEntered();
+    enableCheckboxOnCommaDetected();
     enableGetSelectedPoetFromList();
     getPoetList();
     toggleCollapsibleMenus();

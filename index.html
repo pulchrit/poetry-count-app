@@ -29,7 +29,6 @@
         <header class="header-styles" role="banner">
             
             <h1>Poems<span class="computed">computed</span></h1>
-            <!-- <h2>A new view of your favorite poets.</h2> -->
 
             <p class="instructions">
                 Interested in seeing a different view of the themes and word choices of your 
@@ -41,13 +40,6 @@
         </header>
 
         <main role="main">
-
-            <!-- <p class="instructions">
-                Interested in seeing a different view of themes and word choices of your 
-                favorite poets? Enter the name(s) below to perform a word frequency analysis, 
-                or choose one of the predefined searches. Results will be displayed in a 
-                word chart. You can also view the data or the poems used in the analysis.  
-            </p> -->
             
             <div class="search-predefined-large-screen-layout">
 
@@ -62,10 +54,8 @@
                         </label>
 
                         <!-- If compare is checked, then the value 'yes' will be passed on submit. -->
-                        <label id="checkbox" for="compare-poets">
-                        <!-- <label class="hidden" id="checkbox" for="compare-poets"> May need if I 
-                            decide to make the checkbox conditional.-->
-                            <input type="checkbox" id="compare-poets" name="compare-poets" value="yes">
+                        <label class="gray-checkbox" id="checkbox" for="compare-poets">
+                            <input type="checkbox" id="compare-poets" name="compare-poets" value="yes" disabled>
                             See comparison charts for multiple poets
                         </label>
 
@@ -78,7 +68,7 @@
                 <section class="predefined-search-style js-predefined-search">
                     
                     <!-- Collapsible based on: https://www.w3schools.com/howto/howto_js_collapsible.asp -->
-                    <button tabindex="0" type="button" class="searches-collapsible js-predefined-searches">Predefined searches:</button>
+                    <button tabindex="0" type="button" class="searches-collapsible js-predefined-searches">Sample searches:</button>
                     <form role="form" class="collapsible-content hidden js-predefined-searches-list">
                             
                             <label class="input-styles predefined-input-styles" for="predefined-searches">Please select a poet or poets:</label>
