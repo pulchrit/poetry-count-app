@@ -122,6 +122,7 @@ function handleNextPoemClicked(poemsArray, compare) {
     $(".js-results").on("click", "#js-next-poem", function(event) {
         poemCountTracking.incrementCount();
         $(".singleAggregate").html(createPoemViewer(poemsArray, compare));
+        scrollToTopOfPage();
     })
 }
 
@@ -133,5 +134,6 @@ function handlePreviousPoemClicked(poemsArray, compare) {
     $(".js-results").on("click", "#js-previous-poem", function(event) {
         poemCountTracking.decrementCount();
         $(".singleAggregate").html(createPoemViewer(poemsArray, compare));
+        scrollToTopOfPage();
     })
 }
