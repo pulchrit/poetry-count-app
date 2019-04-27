@@ -50,7 +50,9 @@
                     <form role="form" class="collapsible-content hidden js-poet-search-form">
                         
                         <label class="input-styles" for="poets">Enter poet (or poets separated by commas):
-                            <input type="text" id="poets" name="poets" required placeholder="Shakespeare, Emily Dickinson">
+                            <input type="text" id="poets" name="poets" 
+                                required placeholder="Shakespeare, Emily Dickinson" 
+                                aria-controls="error-region error-region2 results-region">
                         </label>
 
                         <!-- If compare is checked, then the value 'yes' will be passed on submit. -->
@@ -72,7 +74,8 @@
                     <form role="form" class="collapsible-content hidden js-predefined-searches-list">
                             
                             <label class="input-styles predefined-input-styles" for="predefined-searches">Please select a poet or poets:</label>
-                            <select class="predefined-select-box-styles" id="predefined-searches">
+                            <select class="predefined-select-box-styles" id="predefined-searches" 
+                                aria-controls="error-region error-region2 results-region">
                                 <optgroup label="Individual poets">
                                     <option value="Jupiter Hammon">Jupiter Hammon</option>
                                     <option value="Edgar Allan Poe">Edgar Allan Poe</option>
@@ -90,9 +93,9 @@
                 </section>
             </div>
             
-            <section class="error-styles js-error hidden"></section>
+            <section role="region" id="error-region" class="error-styles js-error hidden" aria-live="polite"></section>
 
-            <section class="poet-list-styles js-poet-list hidden">
+            <section role="region" id="error-region2" class="poet-list-styles js-poet-list hidden" aria-live="polite">
                 <label for="poet-list">
                     Apologies, the PoetryDB is really quite small. Choose a name from the drop-down below,
                     and it will automatically be added to the search box. You can make multiple
@@ -102,7 +105,7 @@
                 <select id="poet-list"></select>
             </section>
 
-            <section class="js-results hidden">
+            <section role="region" id="results-region" class="js-results hidden" aria-live="polite">
                 <div class="singleAggregate"></div>
                 <div class="individual"></div>
             </section>
