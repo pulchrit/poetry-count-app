@@ -5,7 +5,7 @@ function createPoetsListString(responseJSON) {
 }
 
 function constructPoetryDBUrl(poet) {
-    return `http://poetrydb.org/author/${poet}`;
+    return `https://poetrydb.org/author/${poet}`;
 }
 
 function createGettingPoetDataString() {
